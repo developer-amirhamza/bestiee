@@ -34,7 +34,8 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
   const { user, status } = useSelector((state: RootState) => state.userSlice);
 
   useEffect(() => {
-    if (status === "idle") dispatch(fetchUser());
+    const token = localStorage.getItem("accessToken");
+    if (token && status === "idle") dispatch(fetchUser());
   }, [status, dispatch]);
 
   const role = normaliseRole(user?.role);
