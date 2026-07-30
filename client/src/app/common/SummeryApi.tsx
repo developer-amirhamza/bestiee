@@ -7,6 +7,10 @@ console.log(baseUrl, "url working ")
 
 export const SummeryApi = {
 
+    verifyEmail: {
+        url: "/api/user/verify-email",
+        method: "post",
+    },
     forgotPassword: {
         url: "/api/user/forgot-password",
         method: "post",

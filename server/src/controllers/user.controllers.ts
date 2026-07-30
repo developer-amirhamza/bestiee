@@ -52,7 +52,7 @@ const SignUp = async (req: Request, res: Response) => {
                 mobile: mobile?.toString(),
             },
         });
-        const verifyEmailUrl = `${process.env.CLIENT}/verify-email?code=${user.id}`;
+        const verifyEmailUrl = `${process.env.CLIENT_URL}/verify-email?code=${user.id}`;
         // Email failure shouldn't fail the signup — the account is already created.
         const emailResult = await sendEmail({
             sendTo: email,

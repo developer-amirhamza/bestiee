@@ -63,7 +63,7 @@ const SingUp = () => {
                     dispatch(setUserDetails(userDetails?.data))
                     dispatch(fetchCart())
                     setFormData(initialFormData)
-                    router.push("/")
+                    router.push("/verify-email")
                 }
             } else {
                 toast.error(responseData.message)
