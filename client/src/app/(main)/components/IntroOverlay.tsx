@@ -10,7 +10,10 @@ import { useEffect, useRef, useState } from "react";
 // logo just fades in on plain CSS and the intro still reveals on schedule.
 //
 // Brand: dark #1a1a18 · water teal #EDE6DC / #4FA99B · sand #c9b89a · coral #C9573F
-const SESSION_KEY = "aidble_intro_seen";
+//
+// Shown once per browser, ever — not once per tab/session — so a returning
+// visitor never sees it again after their first visit.
+const INTRO_SEEN_KEY = "aidble_intro_seen";
 const LOGO_AT_MS = 1500;     // when the logo starts fading in (matches splash choreography)
 const LOGO_HOLD_MS = 1400;   // how long the logo sits before the curtain lifts
 const REVEAL_MS = 650;       // curtain-lift slide-up duration
@@ -32,18 +35,18 @@ export default function IntroOverlay() {
   const gsapOnRef = useRef(false);
 
   useEffect(() => {
-    // Dev: show on every load. Production: once per browser session.
+    // Dev: show on every load. Production: once per browser, ever.
     const isDev = process.env.NODE_ENV !== "production";
     if (!isDev) {
       let seen = false;
       try {
-        seen = sessionStorage.getItem(SESSION_KEY) === "1";
+        seen = localStorage.getItem(INTRO_SEEN_KEY) === "1";
       } catch {
         seen = true;
       }
       if (seen) {
-        // Already played this session — drop the cover immediately, no
-        // animation, no re-blocking scroll.
+        // Already played on a previous visit — drop the cover immediately,
+        // no animation, no re-blocking scroll.
         done.current = true;
         setShow(false);
         return;
@@ -52,7 +55,7 @@ export default function IntroOverlay() {
 
     if (!isDev) {
       try {
-        sessionStorage.setItem(SESSION_KEY, "1");
+        localStorage.setItem(INTRO_SEEN_KEY, "1");
       } catch {
         /* ignore */
       }
