@@ -7,9 +7,17 @@ console.log(baseUrl, "url working ")
 
 export const SummeryApi = {
 
+    forgotPassword: {
+        url: "/api/user/forgot-password",
+        method: "post",
+    },
     resetPassword: {
         url: "/api/user/reset-password",
         method: "post",
+    },
+    changePassword: {
+        url: "/api/user/change-password",
+        method: "put",
     },
     signup: {
         url: "/api/user/signup",
