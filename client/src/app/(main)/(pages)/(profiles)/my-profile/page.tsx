@@ -127,6 +127,10 @@ const ProfilePage = () => {
 
   // Handle password change
   const handlePasswordChange = async () => {
+    if (!passwordData.currentPassword) {
+      toast.error('Please enter your current password');
+      return;
+    }
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       toast.error('New passwords do not match');
       return;
@@ -138,11 +142,10 @@ const ProfilePage = () => {
     try {
       setPasswordLoading(true);
       const response = await Axios({
-        ...SummeryApi.resetPassword,
+        ...SummeryApi.changePassword,
         data: {
-          email: profile.email,
+          currentPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword,
-          confirmPassword: passwordData.confirmPassword,
         },
       });
       if (response.data?.success) {

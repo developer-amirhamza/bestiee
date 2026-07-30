@@ -1,12 +1,14 @@
 
 import { Response, Request } from "express";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 import { errorHandler } from "../utils/errorHandler";
 import { sendEmail } from "../config/sendEmail";
 import { prisma } from "../lib/prisma";
 import generateRefreshToken from "../utils/refreshToken";
 import generateAccessToken from "../utils/accessToken";
 import verifyEmailTemplate from "../utils/verifyEmailTemplate";
+import forgotPasswordTemplate from "../utils/forgotPasswordTemplate";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
 import { uploadImageCloudinary } from "../config/cloudinary";
@@ -101,6 +103,135 @@ export const verifyEmail = async (req:Request,res:Response)=>{
         })
     } catch (error:any) {
         errorHandler(res,500,`${error.message} || "Internal server error!"`)
+    }
+};
+
+// Forgot password (signed-out flow): email a one-time code, valid for 10
+// minutes. Always responds with the same generic message whether or not the
+// account exists, so this endpoint can't be used to check which emails are
+// registered.
+export const forgotPassword = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return errorHandler(res, 400, "Email is required", true);
+        }
+
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (user) {
+            const otp = crypto.randomInt(100000, 1000000).toString();
+            const otpHash = await bcrypt.hash(otp, await bcrypt.genSalt(10));
+
+            await prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    forgot_password_otp: otpHash,
+                    forgot_password_expire: new Date(Date.now() + 10 * 60 * 1000),
+                },
+            });
+
+            await sendEmail({
+                sendTo: email,
+                subject: "Reset your Health U Shop password",
+                html: forgotPasswordTemplate({ firstName: user.firstName || "there", otp }),
+            }).catch((err) => console.error("Forgot-password email failed:", err.message));
+        }
+
+        res.status(200).json({
+            success: true,
+            error: false,
+            message: "If an account exists for that email, a password reset code has been sent.",
+        });
+    } catch (error: any) {
+        errorHandler(res, 500, error.message || "Internal server error!");
+    }
+};
+
+// Reset password using the emailed OTP (no login required).
+export const resetPassword = async (req: Request, res: Response) => {
+    try {
+        const { email, otp, newPassword } = req.body;
+        if (!email || !otp || !newPassword) {
+            return errorHandler(res, 400, "Email, code and new password are required", true);
+        }
+        if (newPassword.length < 6) {
+            return errorHandler(res, 400, "Password must be at least 6 characters", true);
+        }
+
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user || !user.forgot_password_otp || !user.forgot_password_expire) {
+            return errorHandler(res, 400, "Invalid or expired reset code", true);
+        }
+        if (user.forgot_password_expire.getTime() < Date.now()) {
+            return errorHandler(res, 400, "This reset code has expired. Please request a new one.", true);
+        }
+
+        const otpMatches = await bcrypt.compare(otp, user.forgot_password_otp);
+        if (!otpMatches) {
+            return errorHandler(res, 400, "Invalid or expired reset code", true);
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(newPassword, salt);
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                password: hashPassword,
+                forgot_password_otp: null,
+                forgot_password_expire: null,
+            },
+        });
+
+        res.status(200).json({
+            success: true,
+            error: false,
+            message: "Password reset successfully. You can now sign in.",
+        });
+    } catch (error: any) {
+        errorHandler(res, 500, error.message || "Internal server error!");
+    }
+};
+
+// Change password for an already-authenticated user (profile settings) —
+// requires the current password, unlike the OTP-based forgot-password reset.
+export const changePassword = async (req: AuthRequest, res: Response) => {
+    try {
+        const userId = req.userId;
+        if (!userId) {
+            return errorHandler(res, 401, "Unauthorized", true);
+        }
+        const { currentPassword, newPassword } = req.body;
+        if (!currentPassword || !newPassword) {
+            return errorHandler(res, 400, "Current and new password are required", true);
+        }
+        if (newPassword.length < 6) {
+            return errorHandler(res, 400, "Password must be at least 6 characters", true);
+        }
+
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        if (!user) {
+            return errorHandler(res, 404, "User not found", true);
+        }
+
+        const matchPassword = await bcrypt.compare(currentPassword, user.password);
+        if (!matchPassword) {
+            return errorHandler(res, 400, "Current password is incorrect", true);
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(newPassword, salt);
+        await prisma.user.update({
+            where: { id: userId },
+            data: { password: hashPassword },
+        });
+
+        res.status(200).json({
+            success: true,
+            error: false,
+            message: "Password changed successfully",
+        });
+    } catch (error: any) {
+        errorHandler(res, 500, error.message || "Internal server error!");
     }
 };
 

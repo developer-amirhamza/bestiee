@@ -101,6 +101,9 @@ const SignIn = () => {
                                         : <FaEyeSlash onClick={() => setShowPassword(true)} />}
                                 </div>
                             </div>
+                            <div className="w-full flex justify-end">
+                                <Link href={"/forgot-password"} className='text-sm font-semibold text-secondary hover:underline'>Forgot password?</Link>
+                            </div>
                         </div>
                         <input disabled={!validInput} type="submit" value={loading ? "Processing.." : "Login"}
                             className={`${validInput ? "bg-secondary-hover text-white cursor-pointer hover:bg-secondary" : "bg-primary-hover   cursor-not-allowed"}  p-2 text-secondary
