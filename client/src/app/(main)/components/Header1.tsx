@@ -35,7 +35,6 @@ const Header1 = () => {
     const user = useSelector((state: RootState) => state.userSlice)
     const router = useRouter()
 
-    const [accessToken, setAccessToken] = useState<string | null>(null)
     const [openCartMenu, setOpenCartMenu] = useState(false)
     const [showUserMenu, setShowUserMenu] = useState(false)
     const [topbarVisible, setTopbarVisible] = useState(true)
@@ -75,15 +74,15 @@ const Header1 = () => {
     }, [status, dispatch])
 
     useEffect(() => {
+        // Read localStorage live rather than from state — `user.status` is
+        // reset to "idle" on sign-out too, and a stale token value captured
+        // once at mount would otherwise re-fire fetchUser() right after
+        // sign-out clears it, surfacing a spurious "token missing" toast.
         const token = localStorage.getItem('accessToken')
-        setAccessToken(token)
-    }, [])
-
-    useEffect(() => {
-        if (accessToken && user.status === 'idle') {
+        if (token && user.status === 'idle') {
             dispatch(fetchUser())
         }
-    }, [accessToken, user.status, dispatch])
+    }, [user.status, dispatch])
 
     const subtotal = cart?.items?.reduce(
         (sum, item) => sum + item.product.price * item.quantity, 0
