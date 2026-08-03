@@ -6,6 +6,7 @@ import Axios from '@/utils/Axios';
 import { SummeryApi } from '@/app/common/SummeryApi';
 import AxiosToastError from '@/utils/AxiosToastError';
 import toast from 'react-hot-toast';
+import ImageUploader from '../../components/ImageUploader';
 
 const RichTextEditor = dynamic(() => import('@/app/(main)/components/UI/RichTextEditor'), { ssr: false });
 
@@ -92,15 +93,25 @@ const CreateBlogPage = () => {
                     <RichTextEditor value={form.content} onChange={(html) => setForm(prev => ({ ...prev, content: html }))} />
                 </div>
                 <div>
-                    <label className="block font-medium mb-1">Featured Image URL</label>
-                    <input
-                        type="url"
-                        name="featuredImage"
-                        value={form.featuredImage}
-                        onChange={handleChange}
-                        placeholder="https://..."
-                        className="w-full border rounded px-3 py-2"
-                    />
+                    <label className="block font-medium mb-1">Featured Image</label>
+                    <div className="flex items-center gap-3">
+                        {form.featuredImage && (
+                            <img src={form.featuredImage} alt="Featured" className="w-20 h-20 object-cover rounded border" />
+                        )}
+                        <ImageUploader
+                            onUploaded={(url) => setForm(prev => ({ ...prev, featuredImage: url }))}
+                            label={form.featuredImage ? 'Replace image' : 'Upload image'}
+                        />
+                        {form.featuredImage && (
+                            <button
+                                type="button"
+                                onClick={() => setForm(prev => ({ ...prev, featuredImage: '' }))}
+                                className="text-red-500 text-sm"
+                            >
+                                Remove
+                            </button>
+                        )}
+                    </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div>

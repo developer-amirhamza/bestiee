@@ -24,6 +24,7 @@ import phase3Router from "./routes/phase3.routes"
 import healthRouter from "./routes/health.routes"
 import teamTaskRouter from "./routes/teamTask.routes"
 import waitlistRouter from "./routes/waitlist.routes"
+import uploadImageRouter from "./routes/uploadImage.route"
 
 config();
 const app = express();
@@ -62,6 +63,7 @@ app.use("/api/phase3", phase3Router);
 app.use("/api/health", healthRouter);
 app.use("/api/team-tasks", teamTaskRouter);
 app.use("/api/waitlist", waitlistRouter);
+app.use("/api/image", uploadImageRouter);
 
 
 

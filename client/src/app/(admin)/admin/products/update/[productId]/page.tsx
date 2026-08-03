@@ -9,6 +9,7 @@ import AxiosToastError from '@/utils/AxiosToastError';
 import toast from 'react-hot-toast';
 import { fetchCategories } from '@/redux/slices/categorySlice';
 import { fetchSubcategoriesByCategory } from '@/redux/slices/subcategorySlice';
+import ImageUploader from '../../../components/ImageUploader';
 
 interface MoreDetails {
   [key: string]: string;
@@ -44,7 +45,6 @@ const ProductEditPage = () => {
   const [subcategoryId, setSubcategoryId] = useState('');
   const [stock, setStock] = useState('');
   const [images, setImages] = useState<string[]>([]);
-  const [imageUrlInput, setImageUrlInput] = useState('');
   const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
   const [fetchingProduct, setFetchingProduct] = useState(true);
@@ -137,10 +137,9 @@ const ProductEditPage = () => {
     setMoreDetails(newDetails);
   };
 
-  const addImage = () => {
-    if (imageUrlInput.trim() && !images.includes(imageUrlInput.trim())) {
-      setImages([...images, imageUrlInput.trim()]);
-      setImageUrlInput('');
+  const addImage = (url: string) => {
+    if (!images.includes(url)) {
+      setImages([...images, url]);
     }
   };
   const removeImage = (url: string) => {
@@ -366,16 +365,9 @@ const ProductEditPage = () => {
 
         {/* Images */}
         <div>
-          <label className="block text-sm font-medium mb-1">Image URLs</label>
-          <div className="flex gap-2 mb-2">
-            <input
-              type="url"
-              value={imageUrlInput}
-              onChange={(e) => setImageUrlInput(e.target.value)}
-              placeholder="https://..."
-              className="flex-1 border rounded px-3 py-2"
-            />
-            <button type="button" onClick={addImage} className="bg-blue-600 text-white px-4 rounded">Add</button>
+          <label className="block text-sm font-medium mb-1">Images</label>
+          <div className="mb-2">
+            <ImageUploader onUploaded={addImage} label="Upload image" />
           </div>
           <div className="grid grid-cols-4 gap-2 mt-2">
             {images.map((url, idx) => (
