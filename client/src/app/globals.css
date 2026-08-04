@@ -5,12 +5,14 @@
 :root {
   --background: #F7F4EF;
   --foreground: #6e553b;
-  --primary:#EDE6DC;
-  --primary-hover:#e9dcc8;
-  --secondary: #394624;
-  --secondary-hover:#4F5B3A;
-  --text:#3D3C3B;
-  --text-hover:#35312d;
+  --primary:#F3F1E9;
+  --primary-hover:#E4E3D9;
+  --secondary: #0e4127;
+  --secondary-hover:#1f8049;
+  --title:#20302C;
+  --paragraph:#5C6A64;
+  --text:#5C6A64;
+  --text-hover:#20302C;
   --shadow: 0px 4.42184px 107.23px rgb(229, 224, 211);
 }
 

@@ -4,7 +4,6 @@ import Chatbot from "./components/Chatbot";
 import CursorEffects from "./components/CursorEffects";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
-import Header1 from "./components/Header1";
 import IntroOverlay from "./components/IntroOverlay";
 import WaitlistPopup from "./components/WaitlistPopup";
 
@@ -18,7 +17,7 @@ export default function MainLayout({
           removes itself after ~2s (once per browser, ever). If JS is off, the
           overlay never mounts and the site shows immediately — no blank screen. */}
       <IntroOverlay />
-      <Header1 />
+      <Header />
       {/* Site-wide GSAP cursor + hover effects (desktop only) */}
       <CursorEffects />
       {children}
