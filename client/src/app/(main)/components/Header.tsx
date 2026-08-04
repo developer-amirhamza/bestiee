@@ -25,7 +25,7 @@ import AutoScrollSlider from './AutoScrollSlider'
 // Plain (non-dropdown) nav links — "Shop" is rendered separately as the
 // category mega-menu.
 const NAV_LINKS = [
-    { label: 'NDIS & Support at Home', href: '/apply/ndis' },
+    { label: 'NDIS & Support', href: '/apply/ndis' },
     { label: 'Trade', href: '/apply/trade' },
     { label: 'Blog', href: '/blog' },
     { label: 'Community', href: '/#community' },
