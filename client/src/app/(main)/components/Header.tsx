@@ -3,8 +3,7 @@ import Image from 'next/image'
 import React, { useEffect, useState, useRef } from 'react'
 import { IoCall } from 'react-icons/io5'
 import { MdVerified } from 'react-icons/md'
-import { FaArrowRight, FaTruck, FaBars, FaTimes, FaChevronDown } from 'react-icons/fa'
-import { FaSearch, FaArrowLeft } from 'react-icons/fa'
+import { FaTruck, FaBars, FaTimes, FaChevronDown } from 'react-icons/fa'
 import logo from "@/assets/bestiee-logo.png"
 import { BsCart4 } from 'react-icons/bs'
 import { GoTriangleDown, GoTriangleUp } from 'react-icons/go'
@@ -17,6 +16,7 @@ import { fetchCategories } from '@/redux/slices/categorySlice'
 import { DisplayPriceInAud } from '@/utils/DisplayPriceInAud'
 import CartMenu from './CartMenu'
 import Search from './Search'
+import TrackOrderModal from './TrackOrderModal'
 import Link from 'next/link'
 import UserMenu from './UI/UserMenu';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -42,11 +42,10 @@ const Header = () => {
     const [openCartMenu, setOpenCartMenu] = useState(false)
     const [showUserMenu, setShowUserMenu] = useState(false)
     const [topbarVisible, setTopbarVisible] = useState(true)
-    const [searchOpen, setSearchOpen] = useState(false)
     const [shopOpen, setShopOpen] = useState(false)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [trackOrderOpen, setTrackOrderOpen] = useState(false)
     const [cartPulsing, setCartPulsing] = useState(false)
-    const searchRef = useRef<HTMLDivElement>(null)
     const shopRef = useRef<HTMLDivElement>(null)
     const prevCartCount = useRef<number | null>(null)
 
@@ -211,42 +210,13 @@ const Header = () => {
                                 {link.label}
                             </Link>
                         ))}
+                        <button
+                            onClick={() => setTrackOrderOpen(true)}
+                            className="flex items-center gap-1.5 text-lg font-medium text-secondary underline decoration-[1.5px] underline-offset-4 whitespace-nowrap"
+                        >
+                            <FaTruck size={15} /> Track order
+                        </button>
                     </nav>
-
-                    {/* Search area */}
-                    <div className="hidden lg:flex justify-end" ref={searchRef}>
-                        <AnimatePresence mode="wait">
-                            {searchOpen ? (
-                                <motion.div
-                                    key="search-box"
-                                    initial={{ opacity: 0, width: 120 }}
-                                    animate={{ opacity: 1, width: 260 }}
-                                    exit={{ opacity: 0, width: 120 }}
-                                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                                    className="flex items-center gap-2"
-                                >
-                                    <button onClick={() => setSearchOpen(false)}
-                                        className="p-2 rounded-full hover:bg-gray-100 text-gray-500 shrink-0 transition-colors"
-                                        aria-label="Close search">
-                                        {!searchOpen ? <FaArrowLeft size={16} /> : <FaArrowRight size={16} /> }
-                                    </button>
-                                    <div className="flex-1"><Search /></div>
-                                </motion.div>
-                            ) : (
-                                <motion.button
-                                    key="search-icon"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.15 }}
-                                    onClick={() => setSearchOpen(true)}
-                                    className="p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors"
-                                    aria-label="Open search">
-                                    <FaSearch size={18} />
-                                </motion.button>
-                            )}
-                        </AnimatePresence>
-                    </div>
 
                     {/* Right actions */}
                     <div className="flex items-center gap-2 ml-auto lg:ml-0 shrink-0">
@@ -259,6 +229,8 @@ const Header = () => {
                         >
                             <FaBars size={20} />
                         </button>
+
+                        <Search />
 
                         {/* Account */}
                         {user.status === 'succeeded' && user.user ? (
@@ -308,10 +280,6 @@ const Header = () => {
                         </button>
                     </div>
                 </div>
-                {/* Mobile search */}
-                <div className="lg:hidden px-4 pb-3">
-                    <Search />
-                </div>
             </div>
 
             {/* Mobile nav drawer */}
@@ -359,12 +327,22 @@ const Header = () => {
                                     {link.label}
                                 </Link>
                             ))}
+                            <button
+                                onClick={() => {
+                                    setMobileMenuOpen(false)
+                                    setTrackOrderOpen(true)
+                                }}
+                                className="flex items-center gap-2 px-2 py-3 text-lg font-medium text-text-hover border-b border-primary-hover text-left"
+                            >
+                                <FaTruck size={16} /> Track order
+                            </button>
                         </motion.div>
                     </>
                 )}
             </AnimatePresence>
 
             {openCartMenu && <CartMenu close={() => setOpenCartMenu(false)} />}
+            {trackOrderOpen && <TrackOrderModal onClose={() => setTrackOrderOpen(false)} />}
         </div>
     )
 }
