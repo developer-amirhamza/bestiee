@@ -46,7 +46,9 @@ export default function Home() {
       </div>
       <FeatureSection />
       <CareGuidesSection />
-      <TestimonialsSection />
+      <div id="community" className="scroll-mt-[110px]">
+        <TestimonialsSection />
+      </div>
       {/* <TrustedStrip /> */}
       {/* <div className="grid container bg-primary  gap-10">
         {home_posts.map((post, index) => (
