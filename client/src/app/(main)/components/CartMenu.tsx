@@ -12,6 +12,7 @@ import { AppDispatch, RootState } from '@/redux/store';
 import { useRouter } from 'next/navigation';
 import { fetchCart } from '@/redux/slices/cartSlice';
 import { planForDays } from '@/config/subscriptionPlans';
+import { motion } from 'framer-motion';
 
 interface Type {
     close: any;
@@ -59,32 +60,41 @@ const CartMenu: React.FC<Type> = ({ close }) => {
     }
 
     return (
-        <section className="bg-neutral-900/90 top-0 z-100 fixed bottom-0 left-0 right-0">
-            <div className="bg-white w-full max-w-sm max-h-screen min-h-screen ml-auto">
+        <motion.section onClick={close}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="bg-neutral-900/90 top-0 z-1000 fixed bottom-0 left-0 right-0">
+            <motion.div
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ type: "spring", stiffness: 320, damping: 34 }}
+                className="bg-primary w-full max-w-sm h-screen ml-auto flex flex-col">
                 <div className="px-3 py-2 shadow-md flex items-center justify-between">
-                    <h2 className="text-xl font-semibold text-neutral-700">Cart</h2>
-                    <Link href="/" className="text-2xl lg:hidden hover:bg-orange-600 border p-0.5 rounded hover:text-white text-neutral-700">
+                    <h2 className="text-xl font-semibold text-title">Your Cart</h2>
+                    {/* <Link href="/" className="text-2xl lg:hidden hover:bg-orange-600 border p-0.5 rounded hover:text-white text-neutral-700">
                         <IoClose />
-                    </Link>
+                    </Link> */}
                     <div
                         onClick={close}
-                        className="text-2xl hidden lg:block hover:bg-orange-600 border p-0.5 rounded hover:text-white text-neutral-700"
+                        className="text-2xl block hover:bg-primary-hover border p-0.5 rounded hover:text-paragraph text-title"
                     >
                         <IoClose />
                     </div>
                 </div>
 
-                <div className="min-h-[75vh] lg:min-h-[80vh] h-full max-h-[calc(100vh-150px)]  flex flex-col px-2">
+                <div className="flex-1 overflow-y-scroll flex flex-col px-2">
                     {cart?.items?.[0] ? (
-                        <>
-                            <div className="flex items-center justify-between px-4 py-2 mt-2 bg-blue-100 rounded-full text-sm text-blue-400 font-semibold">
+                        <div>
+                            <div className="flex items-center justify-between px-4 py-2 mt-2 bg-primary-hover rounded-full text-sm text-title font-semibold">
                                 <p>Your total savings</p>
                                 <p>{DisplayPriceInAud(totalDiscount)}</p>
                             </div>
-                            <div className="grid gap-4 overflow-y-scroll p-4">
+                            <div className="grid gap-4 overflow-y-auto p-4 flex-1">
                                 {cart?.items?.map((item: any) => (
-                                    <div key={item.id} className="flex w-full gap-2 justify-between">
-                                        <div className="min-w-16 max-w-16 h-16 bg-white rounded border-neutral-400 border-dotted border">
+                                    <div key={item.id} className="flex w-full gap-2 bg-white rounded border-primary-hover items-center px-2 Border border justify-between">
+                                        <div className="min-w-16 max-w-16 h-16 ">
                                             <img
                                                 className="object-scale-down rounded-md"
                                                 src={item.product?.images?.[0] || "/placeholder.png"}
@@ -92,9 +102,9 @@ const CartMenu: React.FC<Type> = ({ close }) => {
                                             />
                                         </div>
                                         <div className="w-full text-xs max-w-sm">
-                                            <p className="text-ellipsis line-clamp-2">{item.product.title}</p>
-                                            <p className="text-neutral-400">{item.product.unit}</p>
-                                            <p className="font-semibold">
+                                            <p className="text-ellipsis text-title line-clamp-2">{item.product.title}</p>
+                                            <p className="text-paragraph">{item.product.unit}</p>
+                                            <p className="font-semibold text-paragraph">
                                                 {DisplayPriceInAud(
                                                     (() => {
                                                         const plan = planForDays((item as any).subscriptionIntervalDays);
@@ -104,7 +114,7 @@ const CartMenu: React.FC<Type> = ({ close }) => {
                                                 )}
                                             </p>
                                             {(item as any).subscriptionIntervalDays && (
-                                                <span className="inline-block mt-1 text-[10px] font-medium text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded-full">
+                                                <span className="inline-block mt-1 text-[10px] font-medium text-title bg-blue-100 px-1.5 py-0.5 rounded-full">
                                                     Subscribed
                                                 </span>
                                             )}
@@ -115,28 +125,7 @@ const CartMenu: React.FC<Type> = ({ close }) => {
                                     </div>
                                 ))}
                             </div>
-                            <div className="grid px-4 py-1 bg-slate-200 rounded">
-                                <h1 className="font-semibold text-neutral-900">Bill Details</h1>
-                                <div className="flex items-center justify-between font-semibold">
-                                    <p className="text-neutral-700 text-sm">Sub Total:</p>
-                                    <p className="text-neutral-700 text-sm">{DisplayPriceInAud(subtotal)}</p>
-                                </div>
-                                <div className="flex items-center justify-between font-semibold">
-                                    <p className="text-neutral-700 text-sm">Discount:</p>
-                                    <p className="text-neutral-500 text-sm line-through">
-                                        {DisplayPriceInAud(totalDiscount)}
-                                    </p>
-                                </div>
-                                <div className="flex items-center justify-between font-semibold">
-                                    <p className="text-neutral-700 text-sm">Total Quantity:</p>
-                                    <p className="text-neutral-600 text-sm">{totalQty} Items</p>
-                                </div>
-                                <div className="flex items-center justify-between font-semibold">
-                                    <p className="text-neutral-900">Grand Total:</p>
-                                    <p className="text-neutral-900">{DisplayPriceInAud(grandTotal)}</p>
-                                </div>
-                            </div>
-                        </>
+                        </div>
                     ) : (
                         <div className="flex w-full flex-col items-center justify-center h-full">
                             <Image src={emptyCart} className="object-scale-down" alt="empty-cart" />
@@ -151,21 +140,47 @@ const CartMenu: React.FC<Type> = ({ close }) => {
                     )}
                 </div>
                 {cart?.items?.[0] && (
-                    <div className="p-2 mx-auto">
-                        <div className="flex items-center rounded px-2 justify-between text-neutral-100 bg-green-700 py-4 static bottom-3">
-                            <div>{DisplayPriceInAud(grandTotal)}</div>
-                            <div
-                                onClick={redirectToCheckoutPage}
-                                className="flex items-center cursor-pointer justify-center gap-2"
-                            >
-                                <button className="cursor-pointer">Proceed</button>
-                                <FaAngleDoubleRight />
+                    <div className="flex flex-col bg-primary-hover border-t-2 border-primary-hover  mx-auto mt-auto w-full">
+                        <div className="grid px-4 py-1  rounded">
+                            <h1 className="font-semibold text-title">Bill Details</h1>
+                            <div className="flex items-center justify-between font-semibold">
+                                <p className="text-paragraph text-sm">Sub Total:</p>
+                                <p className="text-paragraph text-sm">{DisplayPriceInAud(subtotal)}</p>
                             </div>
+                            <div className="flex items-center justify-between font-semibold">
+                                <p className="text-paragraph text-sm">Discount:</p>
+                                <p className="text-paragraph text-sm line-through">
+                                    {DisplayPriceInAud(totalDiscount)}
+                                </p>
+                            </div>
+                            <div className="flex items-center justify-between font-semibold">
+                                <p className="text-paragraph text-sm">Total Quantity:</p>
+                                <p className="text-paragraph text-sm">{totalQty} Items</p>
+                            </div>
+                            <div className="flex items-center justify-between font-semibold">
+                                <p className="text-title">Grand Total:</p>
+                                <p className="text-title">{DisplayPriceInAud(grandTotal)}</p>
+                            </div>
+                        </div>
+
+
+                        <div onClick={redirectToCheckoutPage} className="flex cursor-pointer  items-center mx-auto rounded-full px-4 justify-center max-w-max gap-5 text-neutral-100 bg-secondary-hover py-3 ">
+                            <div
+                                className="flex items-center  justify-center gap-2"
+                            >
+                                <button className="cursor-pointer">Checkout:</button>
+                                <div>{DisplayPriceInAud(grandTotal)}</div>
+                            </div>
+
+
+                        </div>
+                        <div className="text-paragraph mx-auto text-base py-2">
+                            📦 Ships discreetly · secure payment
                         </div>
                     </div>
                 )}
-            </div>
-        </section>
+            </motion.div>
+        </motion.section>
     );
 };
 

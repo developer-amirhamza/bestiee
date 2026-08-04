@@ -142,7 +142,7 @@ const Header = () => {
             </div>
 
             {/* Main navbar */}
-            <div className="bg-background/90 w-full backdrop-blur-md border-b border-primary-hover">
+            <div className="bg-primary-hover/20 w-full backdrop-blur-xl shadow-xl">
                 <div className="max-w-[1240px] mx-auto w-full flex items-center gap-7 px-4 sm:px-7 h-19">
 
                     {/* Logo */}
@@ -177,7 +177,7 @@ const Header = () => {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -6 }}
                                         transition={{ duration: 0.15 }}
-                                        className="absolute top-10 left-0 w-[560px] max-w-[80vw] bg-white border border-primary-hover rounded-2xl shadow-2xl p-6 grid grid-cols-2 gap-x-8 gap-y-3 z-50"
+                                        className="absolute top-10 left-0 w-140 max-w-[80vw] bg-white border border-primary-hover rounded-2xl shadow-2xl p-6 grid grid-cols-2 gap-x-8 gap-y-3 z-50"
                                     >
                                         {categories.length > 0 ? categories.map((cat) => (
                                             <Link
@@ -291,14 +291,14 @@ const Header = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setMobileMenuOpen(false)}
-                            className="fixed inset-0 bg-black/40 z-[60] lg:hidden"
+                            className="fixed inset-0 bg-black/40 z-60 lg:hidden"
                         />
                         <motion.div
-                            initial={{ x: '100%' }}
+                            initial={{ x: '-100%' }}
                             animate={{ x: 0 }}
-                            exit={{ x: '100%' }}
+                            exit={{ x: '-100%' }}
                             transition={{ type: 'spring', stiffness: 320, damping: 34 }}
-                            className="fixed top-0 right-0 h-full w-[82%] max-w-xs bg-background z-[70] p-6 flex flex-col gap-1 overflow-y-auto lg:hidden"
+                            className="fixed top-0 left-0 h-full w-[82%] max-w-xs bg-background z-70 p-6 flex flex-col gap-1 overflow-y-auto lg:hidden"
                         >
                             <div className="flex items-center justify-between mb-4">
                                 <span className="text-lg font-semibold text-text-hover">Menu</span>
@@ -341,7 +341,9 @@ const Header = () => {
                 )}
             </AnimatePresence>
 
-            {openCartMenu && <CartMenu close={() => setOpenCartMenu(false)} />}
+            <AnimatePresence>
+                {openCartMenu && <CartMenu close={() => setOpenCartMenu(false)} />}
+            </AnimatePresence>
             {trackOrderOpen && <TrackOrderModal onClose={() => setTrackOrderOpen(false)} />}
         </div>
     )
