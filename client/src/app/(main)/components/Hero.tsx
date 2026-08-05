@@ -1,210 +1,146 @@
 "use client"
-import React from 'react'
-import Image from 'next/image'
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { FaStar, FaPhoneAlt } from 'react-icons/fa'
-import { MdVerified } from 'react-icons/md'
-import { BsCheckCircleFill } from 'react-icons/bs'
-import banner from '@/assets/banners/image.png'
+import { FaPhoneAlt, FaTimes } from 'react-icons/fa'
 
+const CHECKS = [
+    'NDIS and Support at Home claimable',
+    'Discreet packaging, Australia wide',
+    'Easy to use platform',
+    'Easy to use invoicing',
+]
+
+const VLOG_ITEMS = [
+    { title: 'Pads or pull up pants?', src: '/social/video-1.mp4' },
+    { title: 'Absorbency levels explained', src: '/social/video-2.mp4' },
+    { title: 'Measure for the right size', src: '/social/video-3.mp4' },
+    { title: 'A night routine that works', src: '/social/video-5.mp4' },
+]
 
 const Hero = () => {
-    return (
-        <section className="relative h-[90vh] -mt-20 min-h-150 w-full overflow-hidden">
+    const [playing, setPlaying] = useState<string | null>(null)
 
+    return (
+        <section className="relative -mt-20 w-full overflow-hidden bg-secondary text-background">
             {/* Background video */}
             <video
-                className="absolute inset-0 w-full h-full object-cover  "
-                src="/hero-bg.mp4"
+                className="absolute inset-0 w-full h-full object-cover"
+                src="/social/section-ad.mp4"
                 autoPlay
                 loop
                 muted
                 playsInline
             />
+            <div className="absolute inset-0 bg-secondary/80" />
+            <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_12%_40%,rgba(0,0,0,.42),transparent_60%)]" />
 
-            {/* Soft light overlay for text legibility (matches reference's airy look) */}
-            <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/40 to-transparent" />
+            <div className="relative z-10 container mx-auto px-6 py-20 lg:py-24 flex flex-wrap gap-12 items-center">
+                {/* Text content */}
+                <div className="flex-1 min-w-[300px] max-w-2xl flex flex-col gap-6">
+                    <span className="self-start bg-white/16 text-background text-sm font-semibold rounded-full px-4.5 py-2">
+                        Dignified continence care
+                    </span>
 
-            {/* Content */}
-            <div className="relative z-10 container mx-auto px-6 h-full flex flex-col justify-center">
-                <div className="max-w-2xl flex flex-col gap-6">
-
-                    {/* Eyebrow */}
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-gray-700">
-                        Dignified Continence Care
-                    </p>
-
-                    {/* Headline — large editorial serif */}
-                    <h1 className="font-serif text-gray-900 leading-[0.95] tracking-tight text-6xl sm:text-7xl lg:text-8xl">
+                    <h1 className="font-secondary leading-[0.95] tracking-tight text-5xl sm:text-6xl lg:text-7xl">
                         Care gently.<br />
                         Live freely.
                     </h1>
 
-                    {/* Paragraph */}
-                    <p className="text-gray-700 text-base sm:text-lg leading-relaxed max-w-md">
+                    <p className="text-background/90 text-base sm:text-lg leading-relaxed max-w-md">
                         Premium continence products, delivered discreetly to your door. Pure comfort, gentle dignity, confident days — fully NDIS claimable.
                     </p>
 
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 max-w-lg">
+                        {CHECKS.map((item) => (
+                            <div key={item} className="flex gap-2.5 items-start text-sm sm:text-base leading-snug">
+                                <span className="shrink-0 w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold mt-0.5">✓</span>
+                                {item}
+                            </div>
+                        ))}
+                    </div>
 
-                    {/* CTA buttons */}
-                    <div className="flex flex-wrap gap-5">
+                    <div className="flex flex-wrap gap-6 items-center pt-2">
                         <Link
                             href="/products"
-                            className="flex items-center font-primary uppercase shadow-xl hover:shadow-2xl  gap-2 bg-secondary hover:bg-secondary-hover text-background font-semibold px-6 py-3 rounded-full hover:scale-105 transition-all duration-300  text-sm"
+                            className="flex items-center gap-2 bg-white hover:bg-primary text-secondary font-semibold px-7 py-3.5 rounded-full transition-colors text-base"
                         >
                             Shop products →
                         </Link>
                         <Link
                             href="/contact-us"
-                            className="flex items-center shadow-xl hover:shadow-2xl gap-2 uppercase hover:scale-105 transition-all duration-300 border border-primary-hover hover:border-secondary hover:text-secondary-hover text-text font-semibold px-6 py-3 rounded-full  text-sm bg-primary"
+                            className="flex items-center gap-2 font-semibold underline decoration-[1.5px] underline-offset-4 hover:text-primary transition-colors text-base"
                         >
                             <FaPhoneAlt size={13} />
                             Talk to NDIS Support
                         </Link>
                     </div>
-
-                    {/* Stats
-                    <div className="flex flex-wrap gap-8 pt-2">
-                        <div>
-                            <p className="text-2xl font-extrabold text-gray-900">12k+</p>
-                            <p className="text-xs text-gray-500 mt-0.5">Australian households</p>
-                        </div>
-                        <div>
-                            <p className="text-2xl font-extrabold text-gray-900 flex items-center gap-1">
-                                4.9 <FaStar className="text-amber-400 text-lg" />
-                            </p>
-                            <p className="text-xs text-gray-500 mt-0.5">Avg. customer rating</p>
-                        </div>
-                        <div>
-                            <p className="text-2xl font-extrabold text-gray-900">100%</p>
-                            <p className="text-xs text-gray-500 mt-0.5">Discreet packaging</p>
-                        </div>
-                    </div> */}
-
                 </div>
-                {/* Floating review card — top right */}
-                    <div className="absolute top-18 right-0 bg-white rounded-2xl shadow-lg px-4 py-3 flex flex-col gap-1 min-w-45 border border-gray-100">
-                        <div className="flex gap-0.5">
-                            {[1,2,3,4,5].map(i => <FaStar key={i} className="text-amber-400 text-xs" />)}
-                        </div>
-                        <p className="text-xs font-semibold text-gray-800">"Aidble made care easy."</p>
-                        <p className="text-[10px] text-gray-400">— Verified carer review</p>
-                    </div>
 
-                    {/* Floating NDIS card — bottom left */}
-                    <div className="absolute bottom-14 right-4 bg-white rounded-2xl shadow-lg px-4 py-3 flex items-center gap-3 border border-gray-100 min-w-52.5">
-                        <BsCheckCircleFill className="text-green-500 shrink-0" size={22} />
+                {/* Care tips + vlog cards */}
+                <div className="w-full sm:w-auto flex-1 min-w-[300px] max-w-xl grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Link
+                        href="/blog"
+                        className="bg-white text-secondary rounded-2xl p-6 flex flex-col justify-between gap-4 aspect-square hover:-translate-y-1 transition-transform"
+                    >
                         <div>
-                            <p className="text-xs font-bold text-gray-800">NDIS plan approved</p>
-                            <p className="text-[10px] text-gray-400">Invoiced directly to your plan</p>
+                            <div className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center text-2xl">✚</div>
+                            <div className="font-secondary text-2xl mt-4">Care tips</div>
+                            <p className="text-text text-sm mt-2 leading-snug">
+                                Absorbency, sizing, skin care and funding, in plain words.
+                            </p>
+                        </div>
+                        <div className="text-sm font-semibold">Read the guides →</div>
+                    </Link>
+
+                    <div className="bg-white/10 rounded-2xl p-4 flex flex-col gap-2 aspect-square">
+                        <div className="text-xs font-bold tracking-wider opacity-80 shrink-0">BESTIEE VLOG</div>
+                        <div className="flex flex-col gap-1.5 flex-1 min-h-0">
+                            {VLOG_ITEMS.map((v) => (
+                                <button
+                                    key={v.src}
+                                    onClick={() => setPlaying(v.src)}
+                                    className="flex items-center gap-2.5 text-left bg-white/10 hover:bg-white/15 rounded-lg px-2 py-1.5 flex-1 min-h-0 transition-colors"
+                                >
+                                    <span className="relative shrink-0 w-11 h-8 rounded-md overflow-hidden bg-black/25">
+                                        <video
+                                            src={v.src}
+                                            className="absolute inset-0 w-full h-full object-cover"
+                                            muted
+                                            loop
+                                            autoPlay
+                                            playsInline
+                                            preload="metadata"
+                                        />
+                                    </span>
+                                    <span className="flex-1 min-w-0">
+                                        <span className="block text-xs font-semibold leading-tight truncate">{v.title}</span>
+                                        <span className="block text-[11px] text-background/70">Tap to watch</span>
+                                    </span>
+                                </button>
+                            ))}
                         </div>
                     </div>
+                </div>
             </div>
 
-            {/* Scroll indicator */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3">
-                <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-600">
-                    Scroll
-                </span>
-                <span className="w-px h-10 bg-gray-500/50" />
-            </div>
+            {/* Vlog video modal */}
+            {playing && (
+                <>
+                    <div onClick={() => setPlaying(null)} className="fixed inset-0 bg-black/70 z-[95]" />
+                    <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92vw] max-w-2xl z-[96]">
+                        <button
+                            onClick={() => setPlaying(null)}
+                            aria-label="Close video"
+                            className="absolute -top-10 right-0 text-white text-2xl p-1"
+                        >
+                            <FaTimes />
+                        </button>
+                        <video src={playing} className="w-full rounded-xl" controls autoPlay playsInline />
+                    </div>
+                </>
+            )}
         </section>
     )
 }
 
 export default Hero
-
-
-
-
-
-
-
-
-
-
-
-
-// import { banner_slides } from '@/config/page'
-// import Image from 'next/image'
-// import Link from 'next/link'
-// import React, { useEffect, useState } from 'react'
-// import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
-// // import {motion} from "motion"
-
-// const Hero = () => {
-//   const [currentSlide, setCurrentSlide] = useState(0)
-//   useEffect(() => {
-//     if (banner_slides.length === 0) return;
-//     const timer = setInterval(() => {
-//       setCurrentSlide((prevSlide) => (prevSlide + 1) % banner_slides.length);
-//     }, 5000);
-//     return () => { clearInterval(timer) }
-//   }, [])
-//    const handleNextBtn = ()=>{
-//     setCurrentSlide((prevSlide)=> (prevSlide +1) % banner_slides?.length);
-//   }
-//   const handlePrevBtn = ()=>{
-//     setCurrentSlide((prevSlide)=> (prevSlide - 1 + banner_slides?.length) % banner_slides?.length)
-//   }
-//   return (
-//     <div className="min-h-[90vh] group relative">
-//         {banner_slides?.map((slide: any, index: number) => {
-
-//           return (
-//             <div key={index}>
-//               <Image src={slide} className={`absolute  transition-opacity duration-1000 top-0 h-full  w-full  left-0  ${index === currentSlide ? "opacity-100" : "opacity-0"}
-//                 object-cover`} alt="" />
-//               {/* <div
-//                 initial={{
-//                   opacity: 0,
-//                   x: 80,
-//                   y: 0,
-//                 }}
-//                 whileInView={{
-//                   opacity: 1,
-//                   x: 0,
-//                   y: 0,
-//                   transition: {
-//                     type: "tween",
-//                     delay: 0.5,
-//                     duration: 1,
-//                     ease: [0.25, 0.25, 0.25, 0.75],
-//                   }
-//                 }}
-//                 viewport={{ once: false, amount: 0.5 }}
-//                 className='top-1/3 absolute md:left-60 '
-//               >
-//                 <div className={`bg-black/40 flex flex-col gap-2 p-8 transition-opacity duration-1000 text-white max-w-2xl ${index === currentSlide ? "opacity-100" : "opacity-0"}
-//                     z-30 h-60 rounded   mx-10 w-fit`} >
-//                   <h2 className="text-white uppercase text-xl font-light">{slide.heading} </h2>
-//                   <p className=" uppercase text-2xl font-semibold">{slide.title} </p>
-//                   <p className="">{slide?.description} </p>
-//                   <div className="flex justify-between mt-5 ">
-//                     <Link href={"https://gonest.com.au/property/19032026-ryde-2112-sil-sta-mta-respite-hospital-transition-homes-flexible-ndis-housing-ryde-2112"}
-//                       className='border hover:bg-secondary hover:border-secondary px-3.5 rounded-sm font-semibold py-2'
-//                     >{slide.cta.primary} </Link>
-//                     <Link href={"https://gonest.com.au/property/19032026-ryde-2112-sil-sta-mta-respite-hospital-transition-homes-flexible-ndis-housing-ryde-2112"}
-//                       className='border px-3.5 hover:bg-primary hover:border-primary rounded-sm font-semibold py-2'
-//                     >{slide.cta.secondary} </Link>
-//                   </div>
-//                 </div>
-//               </div> */}
-//               <button className='bg-black/10 text-white opacity-0 group-hover:opacity-100 cursor-pointer transition-all duration-500 absolute  top-1/2 left-10 border p-4 z-60 rounded'
-//                 onClick={handlePrevBtn}
-//               >
-//                 <FaChevronLeft />
-//               </button>
-//               <button onClick={handleNextBtn}
-//                 className='bg-black/10 text-white opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity duration-500 absolute  top-1/2 right-10 border p-4 z-60 rounded'>
-//                 <FaChevronRight />
-//               </button>
-
-//             </div>
-//           )
-//         })}
-//       </div>
-//   )
-// }
-
-// export default Hero
