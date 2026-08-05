@@ -116,7 +116,7 @@ const Header = () => {
     }, [cartCount])
 
     return (
-        <div className="sticky top-0 gap-3 mb-8 z-50 ">
+        <div className="sticky top-0 gap-3  z-50 ">
 
             <div
                 className={`bg-secondary text-background transition-all duration-300 overflow-hidden top-bar
@@ -142,7 +142,7 @@ const Header = () => {
             </div>
 
             {/* Main navbar */}
-            <div className="bg-primary-hover/20 w-full backdrop-blur-xl shadow-xl">
+            <div className="bg-primary-hover/90 w-full backdrop-blur-2xl shadow-xl">
                 <div className="max-w-[1240px] mx-auto w-full flex items-center gap-7 px-4 sm:px-7 h-19">
 
                     {/* Logo */}

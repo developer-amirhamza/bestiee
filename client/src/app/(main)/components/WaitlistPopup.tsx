@@ -5,7 +5,7 @@ import Axios from "@/utils/Axios";
 import { SummeryApi } from "@/app/common/SummeryApi";
 
 // ── Brand palette (per launch design rules) ──
-const CORAL = "#394624";
+const CORAL = "#0e4127";
 const TEAL = "#2E7D71";
 const CREAM = "#FFF7F1";
 

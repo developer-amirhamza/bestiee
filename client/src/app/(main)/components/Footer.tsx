@@ -1,6 +1,6 @@
 "use client"
 import React from 'react';
-import logo from "@/assets/header-logo1.png";
+import logo from "@/assets/bestiee-logo.png";
 import Image from 'next/image';
 import Link from 'next/link';
 import { IoCall, IoMail, IoLocationSharp } from 'react-icons/io5';
@@ -33,28 +33,28 @@ const COMPANY_LINKS = [
 
 const Footer = () => {
     return (
-        <footer className="w-full bg-primary py-12 text-text">
+        <footer className="w-full bg-secondary pt-12 text-white">
 
             {/* Main footer content */}
             <div className="container mx-auto px-6 py-14  grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
 
                 {/* Brand column */}
                 <div className="flex flex-col gap-5">
-                     <Image src={logo} alt='Health U Australia' className='  max-w-56 max-h-40 h-full  w-full justify-self-start items-center-safe   ' />
+                     <Image src={logo} alt='Health U Australia' className='  max-w-30 px-2 rounded-md  bg-white   w-full justify-self-start items-center-safe   ' />
 
-                    <p className="text-text text-sm leading-relaxed">
+                    <p className="text-white text-sm leading-relaxed">
                         Aidble Care Pty Ltd is a registered NDIS provider supplying continence and personal care products to Australian families, carers and aged-care facilities.
                     </p>
                 </div>
 
                 {/* Shop column */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-text mb-1">Shop</h3>
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-white mb-1">Shop</h3>
                     {SHOP_LINKS.map((link) => (
                         <Link
                             key={link.label}
                             href={link.href}
-                            className="text-text text-sm transition-colors"
+                            className="text-white text-sm transition-colors"
                         >
                             {link.label}
                         </Link>
@@ -63,12 +63,12 @@ const Footer = () => {
 
                 {/* Support column */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-text mb-1">Support</h3>
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-white mb-1">Support</h3>
                     {SUPPORT_LINKS.map((link) => (
                         <Link
                             key={link.label}
                             href={link.href}
-                            className="text-text text-sm transition-colors"
+                            className="text-white text-sm transition-colors"
                         >
                             {link.label}
                         </Link>
@@ -77,12 +77,12 @@ const Footer = () => {
 
                 {/* Company column */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-text mb-1">Company</h3>
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-white mb-1">Company</h3>
                     {COMPANY_LINKS.map((link) => (
                         <Link
                             key={link.label}
                             href={link.href}
-                            className="text-text text-sm transition-colors"
+                            className="text-white text-sm transition-colors"
                         >
                             {link.label}
                         </Link>
@@ -90,18 +90,18 @@ const Footer = () => {
                 </div>
                 {/* Contact info */}
                 <div className="flex flex-col gap-4">
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-text mb-1">Company</h3>
-                  <div className="flex flex-col gap-3 text-sm text-text">
-                        <a href="tel:1300243253" className="flex items-center gap-2 hover:text-text-hover transition-colors">
-                            <IoCall className="text-text shrink-0" size={16} />
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-white mb-1">Company</h3>
+                  <div className="flex flex-col gap-3 text-sm text-white">
+                        <a href="tel:1300243253" className="flex items-center gap-2 hover:text-white-hover transition-colors">
+                            <IoCall className="text-white shrink-0" size={16} />
                             1300 243 253
                         </a>
-                        <a href="mailto:care@aidble.com.au" className="flex items-center gap-2 hover:text-text-hover transition-colors">
-                            <IoMail className="text-text shrink-0" size={16} />
+                        <a href="mailto:care@aidble.com.au" className="flex items-center gap-2 hover:text-white-hover transition-colors">
+                            <IoMail className="text-white shrink-0" size={16} />
                             care@aidble.com.au
                         </a>
                         <div className="flex items-center gap-2">
-                            <IoLocationSharp className="text-text shrink-0" size={16} />
+                            <IoLocationSharp className="text-white shrink-0" size={16} />
                             Sydney · Melbourne · Brisbane
                         </div>
                     </div>
@@ -130,9 +130,9 @@ const Footer = () => {
             </div>
 
             {/* Bottom bar */}
-            <div className="border-t border-[#1e2d40] mt-5">
-                <div className="container mx-auto px-6 py-4 flex flex-col  sm:flex-row items-center justify-between gap-2 text-xs text-text-hover">
-                    <p>© {new Date().getFullYear()} Aidble Care Pty Ltd · ABN 00 000 000 000</p>
+            <div className="border-t border-primary mt-5 ">
+                <div className="container mx-auto  px-6  flex flex-col  sm:flex-row items-center justify-between gap-2 text-xs text-white-hover">
+                    <p className='py-5'>© {new Date().getFullYear()} Aidble Care Pty Ltd · ABN 00 000 000 000</p>
                     <div className="flex items-center gap-4">
                         <span className="flex items-center gap-1">
                             <MdVerified className="text-[#1a56db]" size={13} />

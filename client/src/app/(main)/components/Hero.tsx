@@ -21,7 +21,7 @@ const Hero = () => {
     const [playing, setPlaying] = useState<string | null>(null)
 
     return (
-        <section className="relative -mt-20 w-full overflow-hidden bg-secondary text-background">
+        <section className="relative py-5  w-full overflow-hidden bg-secondary text-background">
             {/* Background video */}
             <video
                 className="absolute inset-0 w-full h-full object-cover"
