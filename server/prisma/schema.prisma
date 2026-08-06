@@ -281,7 +281,7 @@ model Product {
   stock         Int          @default(0)
   colors        String[]
   categoryId    String?
-  more_details  String[]
+  more_details  Json?
   isActive      Boolean      @default(true)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
