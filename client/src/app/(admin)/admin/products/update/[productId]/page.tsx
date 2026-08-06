@@ -49,6 +49,13 @@ const ProductEditPage = () => {
   const [loading, setLoading] = useState(false);
   const [fetchingProduct, setFetchingProduct] = useState(true);
 
+  // Optional detail fields
+  const [pack, setPack] = useState('');
+  const [absorbency, setAbsorbency] = useState('');
+  const [pricingNotes, setPricingNotes] = useState('');
+  const [keyFeatures, setKeyFeatures] = useState<string[]>([]);
+  const [featureInput, setFeatureInput] = useState('');
+
   // Fetch categories on mount
   useEffect(() => {
     if (categories.length === 0) {
@@ -81,6 +88,10 @@ const ProductEditPage = () => {
           setStock(product.stock?.toString() || '');
           setImages(product.images || []);
           setIsActive(product.isActive ?? true);
+          setPack(product.pack || '');
+          setAbsorbency(product.absorbency || '');
+          setPricingNotes(product.pricingNotes || '');
+          setKeyFeatures(product.keyFeatures || []);
         } else {
           toast.error('Failed to load product');
           router.push('/admin/products');
@@ -137,6 +148,16 @@ const ProductEditPage = () => {
     setMoreDetails(newDetails);
   };
 
+  const addFeature = () => {
+    if (featureInput.trim() && !keyFeatures.includes(featureInput.trim())) {
+      setKeyFeatures([...keyFeatures, featureInput.trim()]);
+      setFeatureInput('');
+    }
+  };
+  const removeFeature = (feature: string) => {
+    setKeyFeatures(keyFeatures.filter(f => f !== feature));
+  };
+
   const addImage = (url: string) => {
     if (!images.includes(url)) {
       setImages([...images, url]);
@@ -168,6 +189,10 @@ const ProductEditPage = () => {
       stock: stock ? parseInt(stock) : 0,
       images: images.length ? images : [],
       isActive,
+      pack: pack || undefined,
+      absorbency: absorbency || undefined,
+      pricingNotes: pricingNotes || undefined,
+      keyFeatures: keyFeatures.length ? keyFeatures : undefined,
     };
 
     try {
@@ -329,6 +354,63 @@ const ProductEditPage = () => {
                 {size}
                 <button type="button" onClick={() => removeSize(size)} className="text-red-500">✕</button>
               </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Optional shop-page details */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Pack (optional)</label>
+            <input
+              type="text"
+              value={pack}
+              onChange={(e) => setPack(e.target.value)}
+              placeholder="e.g., Pack of 20"
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Absorbency (optional)</label>
+            <input
+              type="text"
+              value={absorbency}
+              onChange={(e) => setAbsorbency(e.target.value)}
+              placeholder="e.g., Heavy · Overnight"
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-1">Pricing notes (optional)</label>
+            <textarea
+              rows={2}
+              value={pricingNotes}
+              onChange={(e) => setPricingNotes(e.target.value)}
+              placeholder="e.g., Priced by size: S $34.90, M $37.90, L $40.90, XL $43.90"
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+        </div>
+
+        {/* Key features */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Key features (optional)</label>
+          <div className="flex gap-2 mb-2">
+            <input
+              type="text"
+              value={featureInput}
+              onChange={(e) => setFeatureInput(e.target.value)}
+              placeholder="e.g., Elastic leg cuffs for a firm seal"
+              className="flex-1 border rounded px-3 py-2"
+            />
+            <button type="button" onClick={addFeature} className="bg-blue-600 text-white px-4 rounded">Add</button>
+          </div>
+          <div className="space-y-1">
+            {keyFeatures.map((feature) => (
+              <div key={feature} className="bg-gray-50 p-2 rounded flex justify-between items-center">
+                <span>{feature}</span>
+                <button type="button" onClick={() => removeFeature(feature)} className="text-red-500">✕</button>
+              </div>
             ))}
           </div>
         </div>

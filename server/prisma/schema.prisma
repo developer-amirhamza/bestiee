@@ -289,6 +289,11 @@ model Product {
   deletedAt     DateTime?
   sizes         String[]
   subcategoryId String?
+  // Optional product-detail fields (all shown only when set):
+  pricingNotes  String?
+  pack          String?
+  absorbency    String?
+  keyFeatures   String[]     @default([])
   cartItems     CartItem[]
   category      Category?    @relation(fields: [categoryId], references: [id])
   subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
