@@ -6,6 +6,9 @@ import { DisplayPriceInAud } from '@/utils/DisplayPriceInAud';
 import { PriceWithDiscount } from '@/utils/PriceWithDiscount';
 import { validURLConvert } from '@/utils/validURLConvart';
 import AddToCartButton from './UI/AddToCartBtn';
+import StarRating from '@/utils/StartRating';
+import { RootState } from '@/redux/store';
+import {useSelector} from "react-redux"
 
 
 interface Type { data: any }
@@ -19,6 +22,7 @@ const ProductCard: React.FC<Type> = ({ data }) => {
     const hasDiscount = discount > 0;
     const isBestseller = data?.isFeatured;
     const isSale = hasDiscount;
+    const {averageRating,totalReviews} = useSelector((state:RootState)=>state.reviewSlice)
 
     return (
         <div
@@ -30,7 +34,7 @@ const ProductCard: React.FC<Type> = ({ data }) => {
                 <img
                     src={data?.images?.[0]}
                     alt={data?.title}
-                    className="w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-500"
+                    className="w-full h-full object-center group-hover:scale-[1.05] transition-transform duration-500"
                 />
 
                 {/* Badge pills — top left */}
@@ -55,15 +59,19 @@ const ProductCard: React.FC<Type> = ({ data }) => {
                         {data.absorbency}
                     </span>
                 )}
-                <h3 className="text-[14px] font-semibold text-gray-900 leading-snug line-clamp-1">
+                <h3 className="text-[14px] font-semibold text-secondary leading-snug line-clamp-1">
                     {data?.title}
                 </h3>
 
-                {data?.description && (
+                {/* {data?.description && (
                     <p className="text-[12px] text-gray-400 line-clamp-1 mt-0.5">
                         {data.description}
                     </p>
-                )}
+                )} */}
+                <div className="flex gap-2 items-center mt-2">
+                    <StarRating rating={averageRating} />
+                    <span className="text-sm text-orange-500">{averageRating} ({totalReviews} reviews)</span>
+                </div>
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2 mt-2">
                         <span className="text-[14px] font-bold text-gray-900">
