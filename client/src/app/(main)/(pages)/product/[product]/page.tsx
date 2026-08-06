@@ -175,6 +175,11 @@ const ProductDetailsPage = () => {
 
             {/* Right Column - Details */}
             <div className='pt-10 px-5'>
+                {data.absorbency && (
+                    <span className="inline-block bg-primary text-secondary text-xs font-semibold rounded-full px-3 py-1 mb-2">
+                        {data.absorbency}
+                    </span>
+                )}
                 <h1 className="text-2xl font-bold">{data.title}</h1>
                 <div className="flex gap-2 items-center mt-2">
                     <StarRating rating={averageRating} />
@@ -185,7 +190,13 @@ const ProductDetailsPage = () => {
                     {data.discount > 0 && (
                         <p className="line-through text-neutral-500 text-2xl">{DisplayPriceInAud(data.price)}</p>
                     )}
+                    {data.pack && (
+                        <p className="text-sm text-neutral-500">{data.pack}</p>
+                    )}
                 </div>
+                {data.pricingNotes && (
+                    <p className="text-sm text-neutral-500 mt-1">{data.pricingNotes}</p>
+                )}
                 <div className="mt-4">
                     {data.stock === 0 ? (
                         <p className="text-red-500">Out of Stock</p>
@@ -224,6 +235,23 @@ const ProductDetailsPage = () => {
                     <SizeFinder product={data} />
                 </div>
                 <Divider />
+
+                {data.keyFeatures?.length > 0 && (
+                    <>
+                        <div className="mt-4">
+                            <h2 className="text-xl font-semibold mb-2">What makes it work</h2>
+                            <ul className="flex flex-col gap-2">
+                                {data.keyFeatures.map((feature: string, idx: number) => (
+                                    <li key={idx} className="flex gap-2 text-neutral-600">
+                                        <span className="text-secondary">✓</span>
+                                        {feature}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <Divider />
+                    </>
+                )}
 
                 {/* ========== REVIEWS SECTION ========== */}
 

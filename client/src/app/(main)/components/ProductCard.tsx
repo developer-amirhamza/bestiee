@@ -50,6 +50,11 @@ const ProductCard: React.FC<Type> = ({ data }) => {
 
             {/* Content */}
             <div className="flex flex-col p-4 gap-0.5">
+                {data?.absorbency && (
+                    <span className="self-start bg-primary text-secondary text-[11px] font-semibold rounded-full px-2.5 py-1 mb-1">
+                        {data.absorbency}
+                    </span>
+                )}
                 <h3 className="text-[14px] font-semibold text-gray-900 leading-snug line-clamp-1">
                     {data?.title}
                 </h3>
@@ -69,7 +74,9 @@ const ProductCard: React.FC<Type> = ({ data }) => {
                                 {DisplayPriceInAud(Number(data?.price ?? 0))}
                             </span>
                         )}
-
+                        {data?.pack && (
+                            <span className="text-[11px] text-gray-400">{data.pack}</span>
+                        )}
                     </div>
                     <AddToCartButton data={data} />
                 </div>

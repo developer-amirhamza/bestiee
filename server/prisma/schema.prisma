@@ -281,7 +281,7 @@ model Product {
   stock         Int          @default(0)
   colors        String[]
   categoryId    String?
-  more_details  String[]
+  more_details  Json?
   isActive      Boolean      @default(true)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
@@ -289,6 +289,11 @@ model Product {
   deletedAt     DateTime?
   sizes         String[]
   subcategoryId String?
+  // Optional product-detail fields (all shown only when set):
+  pricingNotes  String?
+  pack          String?
+  absorbency    String?
+  keyFeatures   String[]     @default([])
   cartItems     CartItem[]
   category      Category?    @relation(fields: [categoryId], references: [id])
   subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])

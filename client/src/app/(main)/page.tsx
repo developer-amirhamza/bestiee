@@ -16,7 +16,10 @@ export default function Home() {
   return (
     <div className="grid gap-0 mb-10 h-full bg-pr">
       <Hero />
-       <EntryPoints />
+      <div className="grid">
+        <CategoryWiseProducts />
+      </div>
+      <EntryPoints />
       <ProductFinderWizard />
 
       {/* Hero infographic strip */}
@@ -30,9 +33,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="grid">
-        <CategoryWiseProducts />
-      </div>
+
 
       {/* Policies infographic strip */}
       <div className="bg-[#f5f0eb] border-y border-[#e5ddd5]">
@@ -46,7 +47,7 @@ export default function Home() {
       </div>
       <FeatureSection />
       <CareGuidesSection />
-      <div id="community" className="scroll-mt-[110px]">
+      <div id="community" className="scroll-mt-27.5">
         <TestimonialsSection />
       </div>
       {/* <TrustedStrip /> */}
