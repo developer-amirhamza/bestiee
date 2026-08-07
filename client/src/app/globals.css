@@ -11,6 +11,7 @@
   --secondary-hover:#1f8049;
   --title:#20302C;
   --paragraph:#141E1C;
+  --secondary-light:#D8E8DC;
 
   --shadow: 0px 4.42184px 107.23px rgb(229, 224, 211);
 }
@@ -24,6 +25,7 @@
   --color-primary-hover:var(--primary-hover);
   --color-secondary:var(--secondary);
   --color-secondary-hover:var(--secondary-hover);
+  --color-secondary-light:var(--secondary-light);
   --color-text-hover:var(--title);
   --color-text:var(--paragraph);
   --color-title:var(--title);
