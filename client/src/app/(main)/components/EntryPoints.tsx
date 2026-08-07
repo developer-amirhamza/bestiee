@@ -5,57 +5,107 @@ import Link from "next/link";
 // Shop (consumer) · Apply for a trade account (B2B) · NDIS — get a quote.
 const ENTRIES = [
   {
-    eyebrow: "For individuals & families",
-    title: "Shop",
-    desc: "Browse our full range and check out securely. Discreet, private delivery.",
+    eyebrow: "Individuals & families",
+    title: "Buy for yourself or someone you care for",
+    checks: [
+      "Plain, unmarked packaging every time",
+      "Free delivery over $99, Australia wide",
+      "Reorder in two clicks",
+      "Not sure what to buy? Answer 4 questions",
+    ],
     href: "/products",
     cta: "Start shopping",
+    highlight: false,
   },
   {
-    eyebrow: "For pharmacies, aged care & distributors",
-    title: "Trade account",
-    desc: "Apply for wholesale pricing, bulk carton ordering and 30-day invoicing.",
+    eyebrow: "Pharmacies & aged care",
+    title: "Trade accounts, built for resellers",
+    checks: [
+      "Wholesale pricing with volume discounts",
+      "Quick turnaround, same day dispatch",
+      "Support 24/7, business to business",
+      "A long term supply partner, not a one off",
+      "Easy to use business portal",
+    ],
     href: "/apply/trade",
-    cta: "Apply for a trade account",
+    cta: "Open a trade account",
+    highlight: true,
   },
   {
-    eyebrow: "For support coordinators & plan managers",
-    title: "NDIS — get a quote",
-    desc: "Build branded NDIS quotes with annual discounts and funding support.",
+    eyebrow: "Plan managers & coordinators",
+    title: "NDIS and Support at Home, handled",
+    checks: [
+      "Exclusive quotes calculator, itemised",
+      "Annual discounts on standing orders",
+      "A simple guide to using the funding platform",
+      "We invoice the plan directly",
+    ],
     href: "/apply/ndis",
     cta: "Get a quote",
+    highlight: false,
   },
 ];
 
 export default function EntryPoints() {
   return (
-    <section className="bg-white py-16">
+    <section className="bg-background py-20">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col items-center text-center mb-10 gap-3">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-500">
-            One platform, three ways to buy
-          </p>
-          <h2 className="font-serif text-4xl md:text-5xl text-gray-900 tracking-tight">
+        <div className="flex flex-col items-center text-center mb-12 gap-3">
+          <span className="bg-primary text-secondary font-semibold rounded-full px-4.5 py-2 text-sm">
+            Three ways to buy
+          </span>
+          <h2 className="font-secondary text-4xl md:text-5xl text-text-hover tracking-tight">
             How would you like to shop?
           </h2>
+          <p className="text-base md:text-lg text-text max-w-xl">
+            Pick the one that sounds like you. Each path is built for how you actually buy.
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-5">
+        <div className="grid md:grid-cols-3 gap-6 items-stretch">
           {ENTRIES.map((e) => (
-            <Link
+            <div
               key={e.title}
-              href={e.href}
-              className="group flex flex-col rounded-3xl border border-gray-100 bg-[#f5f0eb] p-7 hover:shadow-lg transition-shadow"
+              className={`flex flex-col rounded-2xl p-7 md:p-8 ${
+                e.highlight
+                  ? "bg-secondary text-background"
+                  : "bg-white border border-primary-hover text-text-hover"
+              }`}
             >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#a07850]">
+              <span
+                className={`self-start rounded-full px-3.5 py-1.5 text-sm font-semibold ${
+                  e.highlight ? "bg-white/18 text-background" : "bg-primary text-secondary"
+                }`}
+              >
                 {e.eyebrow}
-              </p>
-              <h3 className="font-serif text-2xl text-gray-900 mt-2 mb-3">{e.title}</h3>
-              <p className="text-sm text-gray-500 leading-relaxed flex-1">{e.desc}</p>
-              <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#1a1a18] group-hover:gap-3 transition-all">
-                {e.cta} <span>→</span>
               </span>
-            </Link>
+              <h3 className="font-secondary text-2xl md:text-[28px] leading-tight mt-4 mb-3.5">
+                {e.title}
+              </h3>
+              <ul className="flex flex-col gap-2 flex-1">
+                {e.checks.map((check) => (
+                  <li
+                    key={check}
+                    className={`flex gap-2.5 text-[15px] leading-snug ${
+                      e.highlight ? "text-background/90" : "text-text"
+                    }`}
+                  >
+                    <span className={`font-bold shrink-0 ${e.highlight ? "" : "text-secondary"}`}>✓</span>
+                    {check}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href={e.href}
+                className={`mt-6 text-center rounded-full py-3 font-semibold transition-colors ${
+                  e.highlight
+                    ? "bg-white text-secondary hover:bg-primary"
+                    : "bg-secondary text-background hover:bg-secondary-hover"
+                }`}
+              >
+                {e.cta} →
+              </Link>
+            </div>
           ))}
         </div>
       </div>
