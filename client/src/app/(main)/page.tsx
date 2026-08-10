@@ -8,6 +8,7 @@ import CareGuidesSection from "./components/CareGuidesSection";
 import ProductFinderCalculator from "./components/ProductFinderCalculator";
 import FeatureSection from "./components/FeatureSection";
 import EntryPoints from "./components/EntryPoints";
+import NdisSupportSection from "./components/NdisSupportSection";
 
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
       </div>
       <EntryPoints />
       <ProductFinderCalculator />
+      <NdisSupportSection />
 
       {/* Hero infographic strip */}
       <div className="bg-[#f5f0eb] border-y border-[#e5ddd5]">
