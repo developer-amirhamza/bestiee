@@ -9,6 +9,7 @@ import ProductFinderCalculator from "./components/ProductFinderCalculator";
 import FeatureSection from "./components/FeatureSection";
 import EntryPoints from "./components/EntryPoints";
 import NdisSupportSection from "./components/NdisSupportSection";
+import CommunitySection from "./components/CommunitySection";
 
 
 export default function Home() {
@@ -50,6 +51,7 @@ export default function Home() {
       <FeatureSection />
       <CareGuidesSection />
       <div id="community" className="scroll-mt-27.5">
+        <CommunitySection />
         <TestimonialsSection />
       </div>
       {/* <TrustedStrip /> */}
