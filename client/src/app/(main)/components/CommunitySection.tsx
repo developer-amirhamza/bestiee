@@ -193,9 +193,9 @@ const CommunitySection = () => {
                 <>
                     <div
                         onClick={() => setActivePost(null)}
-                        className="fixed inset-0 bg-black/50 z-[66]"
+                        className="fixed inset-0 bg-black/50 z-[92]"
                     />
-                    <div className="fixed top-[6vh] left-1/2 -translate-x-1/2 w-[860px] max-w-[94vw] max-h-[88vh] bg-background rounded-[22px] z-[67] shadow-2xl overflow-hidden flex flex-col md:flex-row">
+                    <div className="fixed top-[6vh] left-1/2 -translate-x-1/2 w-[860px] max-w-[94vw] max-h-[88vh] bg-background rounded-[22px] z-[93] shadow-2xl overflow-hidden flex flex-col md:flex-row">
                         <div className="relative w-full md:w-[46%] h-[280px] md:h-auto shrink-0" style={{ backgroundColor: activePost.swatch }}>
                             <PostMedia post={activePost} controls />
                         </div>
