@@ -5,7 +5,7 @@ import InfoGraphicCard from "./components/InfoGraphicCard";
 import { home_posts, infographic_cards } from "@/config/page";
 import TestimonialsSection from "./components/TestimonialsSection";
 import CareGuidesSection from "./components/CareGuidesSection";
-import ProductFinderWizard from "./components/ProductFinderWizard";
+import ProductFinderCalculator from "./components/ProductFinderCalculator";
 import FeatureSection from "./components/FeatureSection";
 import EntryPoints from "./components/EntryPoints";
 
@@ -20,7 +20,7 @@ export default function Home() {
         <CategoryWiseProducts />
       </div>
       <EntryPoints />
-      <ProductFinderWizard />
+      <ProductFinderCalculator />
 
       {/* Hero infographic strip */}
       <div className="bg-[#f5f0eb] border-y border-[#e5ddd5]">
