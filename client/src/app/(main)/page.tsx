@@ -26,7 +26,7 @@ export default function Home() {
       <NdisSupportSection />
 
       {/* Hero infographic strip */}
-      <div className="bg-[#f5f0eb] border-y border-[#e5ddd5]">
+      {/* <div className="bg-[#f5f0eb] border-y border-[#e5ddd5]">
         <div className="container mx-auto flex divide-x divide-[#e5ddd5]">
           {infographic_cards.hero.map((item, index) => (
             <div key={index} className="flex-1">
@@ -34,12 +34,12 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
 
 
       {/* Policies infographic strip */}
-      <div className="bg-[#f5f0eb] border-y border-[#e5ddd5]">
+      {/* <div className="bg-[#f5f0eb] border-y border-[#e5ddd5]">
         <div className="container mx-auto flex flex-wrap divide-x divide-[#e5ddd5]">
           {infographic_cards.policies.map((item, index) => (
             <div key={index} className="flex-1 min-w-37.5">
@@ -47,9 +47,9 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </div>
-      <FeatureSection />
-      <CareGuidesSection />
+      </div> */}
+      {/* <FeatureSection /> */}
+      {/* <CareGuidesSection /> */}
       <div id="community" className="scroll-mt-27.5">
         <CommunitySection />
         <TestimonialsSection />

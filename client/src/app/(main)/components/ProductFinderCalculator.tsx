@@ -92,20 +92,20 @@ const ProductFinderPanel = ({ allProducts }: { allProducts: Product[] }) => {
     return (
         <div className="rounded-2xl p-6 md:p-8 border" style={{ background: 'rgba(255,255,255,.55)', borderColor: 'rgba(20,60,40,.14)' }}>
             <div className="flex items-center gap-3 mb-5">
-                <div className="w-11 h-11 rounded-xl bg-secondary flex items-center justify-center text-xl shrink-0">🧭</div>
+                <div className="w-11 h-11 rounded-xl bg-secondary-hover flex items-center justify-center text-xl shrink-0">🧭</div>
                 <div>
                     <h3 className="font-secondary text-xl text-text-hover">Product Finder</h3>
                     <p className="text-sm text-text">Not sure what to buy? Four questions and we match you.</p>
                 </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 min-h-[420px] flex flex-col">
+            <div className="bg-white rounded-2xl p-6 min-h-105 flex flex-col">
                 {step === -1 && (
                     <div className="flex flex-col items-center text-center justify-center flex-1 gap-4">
-                        <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-2xl">🧭</div>
+                        <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-6xl">🧭</div>
                         <h4 className="font-secondary text-2xl text-text-hover">Product match plus your costs</h4>
                         <p className="text-sm text-text">Four quick taps. No email needed.</p>
-                        <button onClick={() => setStep(0)} className="bg-secondary hover:bg-secondary-hover text-background rounded-full px-6 py-3 font-semibold transition-colors">
+                        <button onClick={() => setStep(0)} className="bg-secondary-hover hover:bg-secondary text-background rounded-full px-6 py-3 font-semibold transition-colors">
                             Start →
                         </button>
                     </div>
@@ -115,7 +115,7 @@ const ProductFinderPanel = ({ allProducts }: { allProducts: Product[] }) => {
                     <div className="flex flex-col flex-1">
                         <div className="flex gap-2 mb-2">
                             {QUESTIONS.map((_, i) => (
-                                <div key={i} className={`flex-1 h-1.5 rounded-full transition-colors ${i <= step ? 'bg-secondary' : 'bg-primary-hover'}`} />
+                                <div key={i} className={`flex-1 h-1.5 rounded-full transition-colors ${i <= step ? 'bg-secondary-hover' : 'bg-primary-hover'}`} />
                             ))}
                         </div>
                         <p className="text-xs text-text mb-4">Question {step + 1} of {QUESTIONS.length}</p>
@@ -125,7 +125,7 @@ const ProductFinderPanel = ({ allProducts }: { allProducts: Product[] }) => {
                                 <button
                                     key={option}
                                     onClick={() => answer(option)}
-                                    className="text-left border border-primary-hover hover:border-secondary hover:bg-primary/40 text-text-hover font-medium text-sm rounded-xl px-4 py-3 transition-colors"
+                                    className="text-left border border-primary-hover hover:border-secondary hover:bg-secondary-l text-text-hover font-medium text-sm rounded-xl px-4 py-3 transition-colors"
                                 >
                                     {option}
                                 </button>
@@ -224,13 +224,13 @@ const CostCalculatorPanel = ({ allProducts }: { allProducts: Product[] }) => {
 
             <div className="bg-white rounded-2xl p-6 min-h-[420px] flex flex-col text-text-hover">
                 <p className="text-sm font-semibold mb-2">1 · Which product?</p>
-                <div className="grid grid-cols-3 gap-2 mb-5">
+                <div className="grid  gap-2 mb-5">
                     {tiles.map((p) => (
                         <button
                             key={p.id}
                             onClick={() => setProductId(p.id)}
-                            className={`rounded-lg px-2 py-2.5 text-xs font-semibold text-center leading-tight transition-colors border ${
-                                p.id === product.id ? 'bg-secondary text-background border-secondary' : 'bg-white text-text-hover border-primary-hover hover:border-secondary'
+                            className={`rounded-lg px-2 py-3 text-sm font-semibold text-center leading-tight transition-colors border ${
+                                p.id === product.id ? 'bg-secondary-hover text-background border-secondary-hover' : 'bg-white text-text-hover border-primary-hover hover:border-secondary'
                             }`}
                         >
                             {p.title}
@@ -244,8 +244,8 @@ const CostCalculatorPanel = ({ allProducts }: { allProducts: Product[] }) => {
                         <button
                             key={o.label}
                             onClick={() => setChangeIndex(i)}
-                            className={`rounded-lg px-2 py-2.5 text-xs font-semibold text-center transition-colors border ${
-                                i === changeIndex ? 'bg-secondary text-background border-secondary' : 'bg-white text-text-hover border-primary-hover hover:border-secondary'
+                            className={`rounded-lg px-2 py-3 text-xs font-semibold text-center transition-colors border ${
+                                i === changeIndex ? 'bg-secondary-hover text-background border-secondary-bg-secondary-hover' : 'bg-white text-text-hover border-primary-hover hover:border-secondary'
                             }`}
                         >
                             {o.label}
@@ -253,20 +253,20 @@ const CostCalculatorPanel = ({ allProducts }: { allProducts: Product[] }) => {
                     ))}
                 </div>
 
-                <div className="bg-primary/50 rounded-xl p-4 mt-auto">
+                <div className="bg-secondary-light rounded-xl p-4 mt-auto">
                     <p className="text-xs font-semibold text-text tracking-wide mb-3">YOUR ESTIMATED COST</p>
                     <div className="grid grid-cols-3 gap-2 text-center">
                         <div>
-                            <p className="font-secondary text-lg text-secondary">{DisplayPriceInAud(weekly)}</p>
-                            <p className="text-[11px] text-text">Weekly</p>
+                            <p className="text-2xl font-medium text-secondary">{DisplayPriceInAud(weekly)}</p>
+                            <p className="text-sm text-text">Weekly</p>
                         </div>
                         <div>
-                            <p className="font-secondary text-lg text-secondary">{DisplayPriceInAud(monthly)}</p>
-                            <p className="text-[11px] text-text">Monthly</p>
+                            <p className="text-2xl font-medium text-secondary">{DisplayPriceInAud(monthly)}</p>
+                            <p className="text-sm text-text">Monthly</p>
                         </div>
                         <div>
-                            <p className="font-secondary text-lg text-secondary">{DisplayPriceInAud(yearly)}</p>
-                            <p className="text-[11px] text-text">Yearly</p>
+                            <p className="text-2xl font-medium text-secondary">{DisplayPriceInAud(yearly)}</p>
+                            <p className="text-sm text-text">Yearly</p>
                         </div>
                     </div>
                     <p className="text-xs text-text mt-3 leading-snug">
@@ -276,7 +276,7 @@ const CostCalculatorPanel = ({ allProducts }: { allProducts: Product[] }) => {
 
                 <Link
                     href="/apply/ndis"
-                    className="mt-4 text-center bg-secondary hover:bg-secondary-hover text-background rounded-full py-3 font-semibold transition-colors"
+                    className="mt-4 text-center bg-secondary-hover hover:bg-secondary text-background rounded-full py-3 font-semibold transition-colors"
                 >
                     Get an exact quote →
                 </Link>
