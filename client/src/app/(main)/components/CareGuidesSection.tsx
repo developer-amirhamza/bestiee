@@ -71,9 +71,9 @@ const CareGuidesSection = () => {
                             {featured.category && (
                                 <span className="text-secondary font-semibold text-sm">{featured.category}</span>
                             )}
-                            <h3 className="font-secondary text-3xl leading-tight">{featured.title}</h3>
+                            <h3 className="font-secondary text-title text-3xl leading-tight">{featured.title}</h3>
                             {featured.excerpt && (
-                                <p className="text-text leading-relaxed line-clamp-2">{featured.excerpt}</p>
+                                <p className=" leading-relaxed line-clamp-2">{featured.excerpt}</p>
                             )}
                             <span className="text-sm text-text mt-1">
                                 {meta(featured)} · <span className="text-secondary font-semibold">Read →</span>
@@ -97,8 +97,8 @@ const CareGuidesSection = () => {
                                     {blog.category && (
                                         <span className="text-secondary font-semibold text-sm">{blog.category}</span>
                                     )}
-                                    <span className="font-secondary text-xl leading-tight line-clamp-2">{blog.title}</span>
-                                    <span className="text-sm text-text">{meta(blog)}</span>
+                                    <span className="font-secondary text-xl text-title leading-tight line-clamp-2">{blog.title}</span>
+                                    <span className="text-sm ">{meta(blog)}</span>
                                 </div>
                             </Link>
                         ))}

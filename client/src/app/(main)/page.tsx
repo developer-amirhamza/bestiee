@@ -1,8 +1,6 @@
 
 import Hero from "./components/Hero";
 import CategoryWiseProducts from "./components/CategoryWiseProducts";
-import InfoGraphicCard from "./components/InfoGraphicCard";
-import { home_posts, infographic_cards } from "@/config/page";
 import TestimonialsSection from "./components/TestimonialsSection";
 import CareGuidesSection from "./components/CareGuidesSection";
 import ProductFinderCalculator from "./components/ProductFinderCalculator";
