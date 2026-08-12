@@ -1,13 +1,11 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Axios from '@/utils/Axios';
 import { SummeryApi } from '@/app/common/SummeryApi';
-import Image from 'next/image';
-import { format } from 'date-fns';
-import { home_posts } from '@/config/page';
 import Loader from '../../components/UI/Loader';
-import PostCard from '../../components/PostCard';
+import Breadcrumb from '../../components/UI/Breadcrumb';
 
 interface Blog {
   id: string;
@@ -17,68 +15,170 @@ interface Blog {
   featuredImage: string;
   category: string;
   publishedAt: string;
-  author: { name: string };
+  readTime?: number;
   views: number;
 }
 
+const meta = (blog: Blog) => {
+  const date = blog.publishedAt
+    ? new Date(blog.publishedAt).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '';
+  return [`${blog.readTime ?? 5} min read`, date].filter(Boolean).join(' · ');
+};
+
 const BlogPage = () => {
+  return (
+    <Suspense fallback={<div className="flex justify-center py-20"><Loader /></div>}>
+      <BlogPageContent />
+    </Suspense>
+  );
+};
+
+const BlogPageContent = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [category, setCategory] = useState<string | null>(searchParams.get('category'));
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const post = home_posts[0];
+
+  // Derive the category tab list once from a broader sample of posts —
+  // there's no fixed enum for category, it's free text on the Blog model.
+  useEffect(() => {
+    Axios({ ...SummeryApi.getAllBlogs, params: { page: 1, limit: 100 } })
+      .then((res) => {
+        if (res.data?.success) {
+          const distinct = Array.from(new Set(res.data.data.map((b: Blog) => b.category).filter(Boolean))) as string[];
+          setCategories(distinct);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const response = await Axios({ ...SummeryApi.getAllBlogs, params: { page, limit: 9 } });
-        if (response.data?.success) {
-          setBlogs(response.data.data);
-          setTotalPages(response.data.pagination.totalPages);
+    setLoading(true);
+    Axios({ ...SummeryApi.getAllBlogs, params: { page, limit: 9, ...(category ? { category } : {}) } })
+      .then((res) => {
+        if (res.data?.success) {
+          setBlogs(res.data.data);
+          setTotalPages(res.data.pagination.totalPages || 1);
         }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBlogs();
-  }, [page]);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [page, category]);
 
-  if (loading) return <div className="flex justify-center py-20"><Loader /></div>;
+  const selectCategory = (c: string | null) => {
+    setCategory(c);
+    setPage(1);
+    router.replace(c ? `/blog?category=${encodeURIComponent(c)}` : '/blog');
+  };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-2 mt-8 text-slate-950 text-center">Incontinence Advice & Support</h1>
-      <h1 className="text-2xl font-bold mb-8 text-neutral-600 text-center">Help understanding and managing incontinence.</h1>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {blogs.map((blog) => (
-          <Link href={`/blog/${blog.slug}`} key={blog.id} className="bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition">
-            {blog.featuredImage && (
-              <img src={blog.featuredImage} alt={blog.title} className="w-full h-48 object-cover" />
-            )}
-            <div className="p-4">
-              {blog.category && <span className="text-sm text-blue-600">{blog.category}</span>}
-              <h2 className="text-xl font-semibold mt-1 line-clamp-2">{blog.title}</h2>
-              <p className="text-gray-600 mt-2 line-clamp-3">{blog.excerpt || blog.title}</p>
-              <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
-                <span>{format(new Date(blog.publishedAt), 'MMM dd, yyyy')}</span>
-                <span>{blog.views} views</span>
-              </div>
-            </div>
-          </Link>
-        ))}
+    <div className="bg-background min-h-screen">
+      <div className="container mx-auto px-6 py-8">
+        <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Blog' }]} />
       </div>
-      {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-8">
-          <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 border rounded disabled:opacity-50">Prev</button>
-          <span className="px-3 py-1">Page {page} of {totalPages}</span>
-          <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)} className="px-3 py-1 border rounded disabled:opacity-50">Next</button>
+
+      <div className="container mx-auto px-6 pb-6 text-center">
+        <span className="bg-[#d8e8dc] text-secondary font-semibold rounded-full px-4.5 py-2 text-sm">
+          Blog &amp; Care Guides
+        </span>
+        <h1 className="font-secondary text-4xl md:text-5xl text-text-hover tracking-tight mt-4">
+          Incontinence care guides and advice
+        </h1>
+        <p className="text-base md:text-lg text-text max-w-xl mx-auto mt-2">
+          Honest, evidence-based articles to support you and the people you care for.
+        </p>
+      </div>
+
+      <div className="container mx-auto px-6 pb-14">
+        <div className="flex gap-2.5 flex-wrap justify-center mb-10">
+          <button
+            onClick={() => selectCategory(null)}
+            className={`font-semibold rounded-full px-5 py-2 text-sm border transition-colors ${
+              category === null
+                ? 'bg-secondary text-background border-secondary'
+                : 'bg-white text-text-hover border-primary-hover hover:border-secondary'
+            }`}
+          >
+            All
+          </button>
+          {categories.map((c) => (
+            <button
+              key={c}
+              onClick={() => selectCategory(c)}
+              className={`font-semibold rounded-full px-5 py-2 text-sm border transition-colors ${
+                category === c
+                  ? 'bg-secondary text-background border-secondary'
+                  : 'bg-white text-text-hover border-primary-hover hover:border-secondary'
+              }`}
+            >
+              {c}
+            </button>
+          ))}
         </div>
-      )}
-      <div className="grid container">
-                <PostCard image={post.image}  title={post.title} subtitle={post.subtitle} paragraph={post.paragraph} buttons={post.buttons} />
+
+        {loading ? (
+          <div className="flex justify-center py-20"><Loader /></div>
+        ) : blogs.length === 0 ? (
+          <p className="text-center text-text py-20">No articles here yet — check back soon.</p>
+        ) : (
+          <>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {blogs.map((blog) => (
+                <Link
+                  key={blog.id}
+                  href={`/blog/${blog.slug}`}
+                  className="bg-white border border-primary-hover rounded-2xl overflow-hidden flex flex-col hover:shadow-lg transition-shadow"
+                >
+                  <div className="relative h-48 bg-[#d8e8dc]">
+                    {blog.featuredImage ? (
+                      <img src={blog.featuredImage} alt={blog.title} className="absolute inset-0 w-full h-full object-cover" />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-secondary/30 text-4xl font-secondary">
+                        {blog.title[0]}
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-6 flex flex-col gap-2 flex-1">
+                    {blog.category && (
+                      <span className="text-secondary font-semibold text-sm">{blog.category}</span>
+                    )}
+                    <h2 className="font-secondary text-2xl leading-tight line-clamp-2">{blog.title}</h2>
+                    {blog.excerpt && <p className="text-text leading-relaxed line-clamp-2 flex-1">{blog.excerpt}</p>}
+                    <span className="text-sm text-text mt-1">
+                      {meta(blog)} · <span className="text-secondary font-semibold">Read →</span>
+                    </span>
+                  </div>
+                </Link>
+              ))}
             </div>
+
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-3 mt-12">
+                <button
+                  disabled={page === 1}
+                  onClick={() => setPage((p) => p - 1)}
+                  className="rounded-full border border-primary-hover px-5 py-2.5 font-semibold text-sm text-text-hover hover:border-secondary transition-colors disabled:opacity-40 disabled:hover:border-primary-hover"
+                >
+                  ← Prev
+                </button>
+                <span className="text-sm text-text">Page {page} of {totalPages}</span>
+                <button
+                  disabled={page === totalPages}
+                  onClick={() => setPage((p) => p + 1)}
+                  className="rounded-full border border-primary-hover px-5 py-2.5 font-semibold text-sm text-text-hover hover:border-secondary transition-colors disabled:opacity-40 disabled:hover:border-primary-hover"
+                >
+                  Next →
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

@@ -52,7 +52,7 @@ export default function Home() {
         </div>
       </div> */}
       {/* <FeatureSection /> */}
-      {/* <CareGuidesSection /> */}
+      <CareGuidesSection />
       <div id="community" className="scroll-mt-27.5">
         <CommunitySection />
         <TestimonialsSection />
