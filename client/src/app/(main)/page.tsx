@@ -11,6 +11,7 @@ import EntryPoints from "./components/EntryPoints";
 import NdisSupportSection from "./components/NdisSupportSection";
 import CommunitySection from "./components/CommunitySection";
 import YouAreNotAlone from "./components/YouAreNotAlone";
+import TrainingSessionsSection from "./components/TrainingSessionsSection";
 
 
 export default function Home() {
@@ -57,6 +58,7 @@ export default function Home() {
         <CommunitySection />
         <TestimonialsSection />
       </div>
+      <TrainingSessionsSection />
       {/* <TrustedStrip /> */}
       {/* <div className="grid container bg-primary  gap-10">
         {home_posts.map((post, index) => (
