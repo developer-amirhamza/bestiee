@@ -1,6 +1,5 @@
 
-/* @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Oriya:wght@400..700&family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap'); */
-@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Oriya:wght@400..700&family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -21,8 +20,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary:var(--primary);
-  --font-secondary: "Newsreader", serif;
-  --font-primary:"Hanken Grotesk", sans-serif;
+  --font-secondary: "Playfair Display", serif;
+  --font-primary: "DM Sans", "DM Sans Fallback", sans-serif;
   --color-primary-hover:var(--primary-hover);
   --color-secondary:var(--secondary);
   --color-secondary-hover:var(--secondary-hover);
@@ -55,40 +54,11 @@
 body {
   background: #F7F4EF;
   color: var(--foreground);
+  font-family: "DM Sans", "DM Sans Fallback", sans-serif;
   overflow-x: hidden;
   scroll-behavior: smooth;
-  font-family: "Hanken Grotesk", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
 
 }
-.swiper {
-  width: 100%;
-  height: 100%;
-}
-
-.swiper-button-next,
-.swiper-button-prev {
-  color: #fff !important;
-  background-color: #000000a1;
-  padding: 35px 20px !important;
-  font-size: medium;
-}
-.swiper-button-next:hover,
-.swiper-button-prev:hover {
-  color: #fff !important;
-  background-color: #f59e0b ;
-}
-
-.swiper-pagination-bullet {
-  background-color:hwb(39 0% 3%) !important;
-  margin: 5px !important ;
-  height: 13px !important;
-  width: 13px !important;
-  display: flex;
-  gap: 10px;
-}
-
 
 .btn {
   background: linear-gradient(

@@ -1,111 +1,124 @@
 "use client"
-
+import { useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
 import { youarenotalone } from '@/config/page'
-
-// Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react';
-
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
-
-// import './styles.css';
-
-// import required modules
-import { Navigation, Pagination } from 'swiper/modules';
-import { useEffect, useRef, useState } from 'react'
-import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
-import { HiOutlineArrowNarrowLeft } from "react-icons/hi";
-import { MdArrowRightAlt } from 'react-icons/md';
-import { LuMoveRight } from 'react-icons/lu';
+import articleHero from '@/assets/blog/article-hero.png'
 
 const YouAreNotAlone = () => {
-    const [currentId, setCurrentId] = useState(0)
+    const { badge, heading, intro, stats, carousel, cta } = youarenotalone
+    const { heading: carouselHeading, subtitle, cardSuggestLabel, cardCtaLabel, slides } = carousel
 
-    const {badge, heading, intro,stats, carousel,cta} = youarenotalone;
-    const {subtitle, cardCtaLabel, cardSuggestLabel, slides} = carousel;
-     const prevRef = useRef<any>(null);
-  const nextRef = useRef<any>(null);
-  const [mounted, setMounted] = useState(false);
+    const [index, setIndex] = useState(0)
+    const total = slides.length
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+    const goPrev = () => setIndex((i) => (i - 1 + total) % total)
+    const goNext = () => setIndex((i) => (i + 1) % total)
 
-  return (
-    <div className="bg-secondary grid gap-5 rounded-2xl my-10 py-10 px-14 text-white ">
-        <span className='bg-primary/20 px-5 max-w-max rounded-full py-2.5' >{badge}</span>
-        <h2 className="text-5xl max-w-xl font-medium ">{heading}</h2>
-        <p className="max-w-xl text-xl">{intro} </p>
-        {/* stats */}
-        <div className="grid grid-cols-1 gap-8  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {stats.map((item,id)=>(
-                <div key={id} className="bg-primary/20 p-7 rounded-2xl grid gap-2  ">
-                    <h3 className="text-5xl">{item.value}</h3>
-                    <p className=""> {item.description}</p>
+    return (
+        <section className="container mx-auto px-6 mb-20">
+            <div className="bg-secondary rounded-3xl p-8 md:p-14 text-background">
+                <div className="max-w-2xl mb-10">
+                    <span className="bg-white/15 font-semibold rounded-full px-4.5 py-2 text-sm">{badge}</span>
+                    <h2 className="font-secondary text-4xl md:text-5xl leading-tight mt-4 mb-3">{heading}</h2>
+                    <p className="text-lg text-background/85">{intro}</p>
                 </div>
-            ))}
-        </div>
-        {/* section bottom */}
-        <div className="grid w-full  ">
-            <div className="py-5">
-                {/* left side */}
-                <div className="grid gap-2">
-                    <h4 className="text-4xl font-secondary font-medium">{carousel.heading} </h4>
-                    <p className="font-medium text-base">{subtitle} </p>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                    {stats.map((s) => (
+                        <div key={s.value} className="bg-white/10 rounded-2xl p-6">
+                            <p className="font-secondary text-3xl md:text-4xl mb-2.5">{s.value}</p>
+                            <p className="text-sm md:text-base text-background/85 leading-snug">{s.description}</p>
+                        </div>
+                    ))}
                 </div>
-                {/* right side */}
-                <div className=" "></div>
+
+                <div className="flex justify-between items-end gap-5 flex-wrap mb-5">
+                    <div>
+                        <h3 className="font-secondary text-2xl md:text-3xl leading-tight">{carouselHeading}</h3>
+                        <p className="text-background/75 mt-1">{subtitle}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <span className="text-sm text-background/70">{index + 1} of {total}</span>
+                        <button
+                            onClick={goPrev}
+                            aria-label="Previous card"
+                            className="w-11 h-11 rounded-full border border-white/40 flex items-center justify-center hover:bg-white/10 transition-colors"
+                        >
+                            ←
+                        </button>
+                        <button
+                            onClick={goNext}
+                            aria-label="Next card"
+                            className="w-11 h-11 rounded-full bg-white text-secondary flex items-center justify-center hover:bg-primary transition-colors"
+                        >
+                            →
+                        </button>
+                    </div>
+                </div>
+
+                <div className="overflow-hidden rounded-2xl">
+                    <div
+                        className="flex transition-transform duration-400 ease-out"
+                        style={{ transform: `translateX(-${index * 100}%)` }}
+                    >
+                        {slides.map((slide) => (
+                            <div key={slide.title} className="w-full shrink-0 px-0.5">
+                                <div className="bg-white/10 rounded-2xl p-6 md:p-8 grid md:grid-cols-[1fr_210px] gap-6 items-center min-h-[210px]">
+                                    <div>
+                                        <span className="bg-white/15 rounded-full px-3.5 py-1.5 text-sm font-semibold">
+                                            {slide.tag}
+                                        </span>
+                                        <h4 className="font-secondary text-2xl md:text-3xl leading-tight mt-3 mb-2.5">
+                                            {slide.title}
+                                        </h4>
+                                        <p className="text-background/85 max-w-[62ch] leading-relaxed">{slide.body}</p>
+                                    </div>
+                                    <Link
+                                        href="/products"
+                                        className="text-left bg-white text-text-hover rounded-xl p-4 w-full block hover:bg-primary transition-colors"
+                                    >
+                                        <div className="h-23 rounded-lg overflow-hidden relative bg-secondary-light flex items-center justify-center">
+                                            {slide.hasPhoto ? (
+                                                <Image src={articleHero} alt="" fill sizes="210px" className="object-cover" />
+                                            ) : (
+                                                <span className="text-xs font-bold tracking-wider text-secondary/30">PHOTO</span>
+                                            )}
+                                        </div>
+                                        <p className="text-[11px] text-text tracking-wide mt-2.5">{cardSuggestLabel}</p>
+                                        <p className="text-sm font-semibold leading-snug line-clamp-2 mt-0.5">
+                                            {slide.suggestedProduct}
+                                        </p>
+                                        <p className="text-sm font-semibold text-secondary mt-2">{cardCtaLabel}</p>
+                                    </Link>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="flex gap-1.5 justify-center mt-5">
+                    {slides.map((slide, i) => (
+                        <button
+                            key={slide.title}
+                            onClick={() => setIndex(i)}
+                            aria-label={`Go to card ${i + 1}`}
+                            className={`h-2 rounded-full transition-all ${i === index ? 'w-6 bg-white' : 'w-2 bg-white/35'}`}
+                        />
+                    ))}
+                </div>
+
+                <div className="flex justify-center mt-8">
+                    <Link
+                        href="/products"
+                        className="bg-white hover:bg-primary text-secondary font-bold rounded-full px-10 py-4 transition-colors"
+                    >
+                        {cta.label}
+                    </Link>
+                </div>
             </div>
-            {/* carousel */}
-            <Swiper
-                // spaceBetween={30}
-                pagination={{
-                clickable: true,
-                type: 'fraction',
-                }}
-                navigation={mounted ? {
-            prevEl: prevRef.current,
-            nextEl: nextRef.current,
-          } : false}
-          style={{
-            '--swiper-navigation-color': '#f59e0b',
-            '--swiper-pagination-color': '#f59e0b',
-          } as React.CSSProperties}
-                cssMode={true}
-                modules={[Pagination, Navigation]}
-                className="mySwiper "
-            >
-                {slides.map((slide,index)=>(
-                <SwiperSlide>
-                <div className="bg-primary/10 p-7 rounded-2xl">
-                {/* slides */}
-                <div className="flex justify-between items-center ">
-                    {/* content */}
-                    <div className=" grid gap-3">
-                        <span className="bg-primary/20 px-4 py-1.5 rounded-full font-medium text-sm max-w-max tracking-wider ">{slides[0].tag}</span>
-                        <h2 className="font-medium text-3xl">{slide.title} </h2>
-                        <p className="max-w-2xl">{slide.body} </p>
-                    </div>
-                    {/* card */}
-                    <div className="bg-background grid p-4 max-w-sm overflow-hidden rounded-xl gap-2">
-                        <img src="https://placehold.co/200x120" className='rounded' alt="place" />
-                        <span className="text-foreground text-sm  uppercase">{cardSuggestLabel} </span>
-                        <h3 className="text-title text-base line-clamp-1 font-medium">{slide.suggestedProduct} </h3>
-                        <button className="text-secondary text-sm font-semibold text-start "> {cardCtaLabel}</button>
-                    </div>
-                </div>
-            </div></SwiperSlide>
-                ))}
-                <div className="flex justify-between items-center absolute top-2/5 z-100   w-full">
-            <button ref={prevRef} className=" text-white text-2xl px-1 border border-white py-1 mr-5 rounded-full cursor-pointer  bg-transparent "><HiOutlineArrowNarrowLeft /> </button>
-            <button ref={nextRef} className=" text-secondary text-2xl px-1 border border-white py-1 rounded-full cursor-pointer  bg-white "><LuMoveRight  /> </button>
-          </div>
-            </Swiper>
-        </div>
-    </div>
-  )
+        </section>
+    )
 }
 
 export default YouAreNotAlone

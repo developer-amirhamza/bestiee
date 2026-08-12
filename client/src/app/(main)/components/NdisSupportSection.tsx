@@ -1,6 +1,3 @@
-import YouAreNotAlone from "./YouAreNotAlone";
-import Suggestion from "./YouAreNotAlone";
-
 const WHY_CARDS = [
     {
         icon: "✚",
@@ -46,9 +43,7 @@ export default function NdisSupportSection() {
                         </div>
                     ))}
                 </div>
-                <YouAreNotAlone/>
             </div>
-
         </section>
     );
 }
