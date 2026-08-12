@@ -24,6 +24,7 @@ export default function Home() {
       <EntryPoints />
       <ProductFinderCalculator />
       <NdisSupportSection />
+      
 
       {/* Hero infographic strip */}
       {/* <div className="bg-[#f5f0eb] border-y border-[#e5ddd5]">

@@ -34,6 +34,7 @@
     "react-redux": "^9.3.0",
     "react-type-animation": "^3.2.0",
     "sharp": "^0.34.5",
+    "swiper": "^14.1.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

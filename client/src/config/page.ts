@@ -189,4 +189,127 @@ export const home_posts = [
 
 ]
 
+export const youarenotalone = {
+  "section": "youarenotalone",
+  "badge": "Did you know",
+  "heading": "You are not the only one. Not even close.",
+  "intro": "Over 7 million Australians live with incontinence, at every age from 40 to 100. Most improve it once they start. Bestiee is a judgement free place to start.",
+  "stats": [
+    {
+      "value": "1 in 3",
+      "description": "Australians over 15 experience incontinence. That is more than 7 million people."
+    },
+    {
+      "value": "Age 51",
+      "description": "Is the average age of Australian women affected. Almost 4 in 10 women live with it."
+    },
+    {
+      "value": "7 in 10",
+      "description": "People with incontinence are under 65. New mums and pelvic floor changes included."
+    },
+    {
+      "value": "Most",
+      "description": "Cases can be improved or managed. Many people wait years. You do not have to."
+    }
+  ],
+  "carousel": {
+    "heading": "What makes Bestiee different, at every age",
+    "subtitle": "Swipe through. Product facts first, then a guide by age group.",
+    "cardSuggestLabel": "WE SUGGEST",
+    "cardCtaLabel": "View details →",
+    "slides": [
+      {
+        "tag": "Built like activewear",
+        "title": "The waistband is designed to move, not just sit there",
+        "body": "Bestiee's stretchable waistband is built for squats, sprints and long days on your feet. It flexes with you rather than digging in or sagging, which is why it reads as activewear rather than medical wear.",
+        "suggestedProduct": "Bestiee Active Pull Up Pants",
+        "productId": "pullup",
+        "hasPhoto": true
+      },
+      {
+        "tag": "Up to 17 hours",
+        "title": "One pair covers a full day, or a full night",
+        "body": "Bestiee Active offers up to 17 hours of protection in a single pair. That is long enough for a full workday, an overnight flight, or a whole night of sleep without a 2am change.",
+        "suggestedProduct": "Bestiee Active, M, L or XXL",
+        "productId": "pullup",
+        "hasPhoto": true
+      },
+      {
+        "tag": "Dermatologically tested",
+        "title": "Gentle enough for daily wear on sensitive skin",
+        "body": "Every pair is dermatologically tested. The breathable, soft materials are designed for wearing every day, including on skin that reacts to most things.",
+        "suggestedProduct": "Bestiee Active Pull Up Pants",
+        "productId": "pullup",
+        "hasPhoto": true
+      },
+      {
+        "tag": "M, L and XXL",
+        "title": "A tailored fit, not one size fits most",
+        "body": "Bestiee comes in M, L and XXL, so the fit is actually yours. A closer fit means a slimmer, more discreet profile under everyday clothes, and a better seal at the legs.",
+        "suggestedProduct": "Check the sizing guide",
+        "productId": "pullup",
+        "hasPhoto": true
+      },
+      {
+        "tag": "Every age group",
+        "title": "This is not only an older person's issue",
+        "body": "Studies suggest incontinence affects people across every age group, not just older adults. Bestiee was designed with that full range in mind, from active twenty somethings to confident eighty somethings.",
+        "suggestedProduct": "Bestiee Active Pull Up Pants",
+        "productId": "pullup",
+        "hasPhoto": true
+      },
+      {
+        "tag": "Ages 40 to 55",
+        "title": "It often starts after childbirth, not after 70",
+        "body": "Almost 4 in 10 Australian women live with incontinence, and the average age is 51. Pelvic floor changes after pregnancy are the most common cause. Light pads inside your own underwear are usually all you need.",
+        "suggestedProduct": "Incontinence Pads L",
+        "productId": "pads",
+        "hasPhoto": false
+      },
+      {
+        "tag": "Pregnant & postnatal",
+        "title": "Leaks during and after pregnancy are normal",
+        "body": "Pressure on the bladder in the third trimester and the weeks after birth catches most women out. Choose a breathable light or moderate pad, change it often, and use a barrier cream to protect skin.",
+        "suggestedProduct": "Incontinence Pads L, moderate",
+        "productId": "pads",
+        "hasPhoto": false
+      },
+      {
+        "tag": "Ages 55 to 70",
+        "title": "Pull up pants feel like underwear, not a nappy",
+        "body": "This is the age most people switch. Pull up pants go on the same way as briefs, hold far more than a pad, and nothing shows or rustles under clothes. Most people use pads by day and pull ups at night.",
+        "suggestedProduct": "Pull Up Pants, size M or L",
+        "productId": "pullup",
+        "hasPhoto": false
+      },
+      {
+        "tag": "Ages 70 to 85",
+        "title": "The right overnight product means everyone sleeps",
+        "body": "Using a day product overnight is the single biggest cause of broken sleep and 2am sheet changes. An overnight rated pull up plus a bed pad underneath covers a full eight hours.",
+        "suggestedProduct": "Pull Up Pants overnight + Bluey bed pads",
+        "productId": "bluey",
+        "hasPhoto": false
+      },
+      {
+        "tag": "Ages 85 to 100",
+        "title": "For carers: build the bed in layers",
+        "body": "Protector, sheet, bluey, then a second sheet and bluey on top. At 2am you strip the top two layers and the bed underneath is already made. A change takes 30 seconds instead of 15 minutes.",
+        "suggestedProduct": "Leak Proof Bed Bundle",
+        "productId": "bundle",
+        "hasPhoto": false
+      },
+      {
+        "tag": "For men",
+        "title": "Men need a different shape, not a bigger pad",
+        "body": "Male anatomy needs a shield or guard shaped product rather than a symmetrical pad. Using the wrong shape is why many men conclude that nothing works. It is the shape, not the absorbency.",
+        "suggestedProduct": "Pull Up Pants, unisex fit",
+        "productId": "pullup",
+        "hasPhoto": false
+      }
+    ]
+  },
+  "cta": {
+    "label": "Find My Products →"
+  }
+}
 export const banner_slides = [banner1, banner2, banner3, banner4]
