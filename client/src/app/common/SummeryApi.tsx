@@ -151,6 +151,15 @@ export const SummeryApi = {
     joinWaitlist: { url: "/api/waitlist", method: "post" },
     listWaitlist: { url: "/api/waitlist", method: "get" },
 
+    // ── Free training sessions ──
+    getTrainingSessions: { url: "/api/training-sessions/all", method: "get" },
+    registerTrainingSession: { url: "/api/training-sessions/register", method: "post" },
+    getAllTrainingSessionsAdmin: { url: "/api/training-sessions/admin/all", method: "get" },
+    createTrainingSession: { url: "/api/training-sessions/create", method: "post" },
+    updateTrainingSession: { url: "/api/training-sessions/update", method: "put" },
+    deleteTrainingSession: { url: "/api/training-sessions/delete", method: "delete" },
+    getTrainingSessionRegistrations: { url: "/api/training-sessions/registrations", method: "post" },
+
     // Payment (Stripe)
     createCheckoutSession: {
         url: "/api/payment/create-checkout-session",
