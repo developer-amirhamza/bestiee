@@ -10,6 +10,7 @@ import NdisSupportSection from "./components/NdisSupportSection";
 import CommunitySection from "./components/CommunitySection";
 import YouAreNotAlone from "./components/YouAreNotAlone";
 import TrainingSessionsSection from "./components/TrainingSessionsSection";
+import RedditFeedSection from "./components/RedditFeedSection";
 
 
 export default function Home() {
@@ -56,6 +57,7 @@ export default function Home() {
         <CommunitySection />
         <TestimonialsSection />
       </div>
+      <RedditFeedSection />
       <TrainingSessionsSection />
       {/* <TrustedStrip /> */}
       {/* <div className="grid container bg-primary  gap-10">

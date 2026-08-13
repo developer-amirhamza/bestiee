@@ -160,6 +160,13 @@ export const SummeryApi = {
     deleteTrainingSession: { url: "/api/training-sessions/delete", method: "delete" },
     getTrainingSessionRegistrations: { url: "/api/training-sessions/registrations", method: "post" },
 
+    // ── Reddit community feed ──
+    getRedditPosts: { url: "/api/reddit-posts/all", method: "get" },
+    getAllRedditPostsAdmin: { url: "/api/reddit-posts/admin/all", method: "get" },
+    createRedditPost: { url: "/api/reddit-posts/create", method: "post" },
+    updateRedditPost: { url: "/api/reddit-posts/update", method: "put" },
+    deleteRedditPost: { url: "/api/reddit-posts/delete", method: "delete" },
+
     // Payment (Stripe)
     createCheckoutSession: {
         url: "/api/payment/create-checkout-session",

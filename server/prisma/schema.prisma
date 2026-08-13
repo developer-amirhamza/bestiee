@@ -540,3 +540,28 @@ model TrainingRegistration {
   @@unique([sessionId, email])
   @@index([sessionId])
 }
+
+// Curated highlights from real Reddit threads for the homepage "From the
+// community" feed. Admin-managed, not a live API pull — url always points
+// at the real thread so a reader can verify/read the original discussion.
+model RedditPost {
+  id          String   @id @default(dbgenerated("gen_random_uuid()"))
+  // e.g. "r/AgingParents"
+  subreddit   String
+  title       String
+  // e.g. "u/quiet_kettle"
+  author      String
+  // Short label chip, e.g. "Carer win", "Funding", "Product help"
+  flair       String
+  upvotes     Int      @default(0)
+  comments    Int      @default(0)
+  // Link to the real Reddit thread
+  url         String
+  postedAt    DateTime @default(now())
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished])
+  @@index([postedAt])
+}
