@@ -126,7 +126,7 @@ const CommunitySection = () => {
                             Incontinence care tips, product guides and NDIS news, every week.
                         </p>
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex flex-wrap gap-3">
                         {(['Instagram', 'Facebook', 'TikTok'] as Platform[]).map((platform) =>
                             PLATFORM_URL[platform] ? (
                                 <a

@@ -17,9 +17,9 @@ export default function Home() {
 
 
   return (
-    <div className="grid gap-0 mb-10 h-full bg-pr">
+    <div className="grid grid-cols-1 gap-0 mb-10 h-full bg-pr">
       <Hero />
-      <div className="grid">
+      <div className="grid grid-cols-1">
         <CategoryWiseProducts />
       </div>
       <EntryPoints />
