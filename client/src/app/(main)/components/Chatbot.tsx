@@ -7,9 +7,18 @@ import { BsChevronDown } from "react-icons/bs";
 import Axios from "@/utils/Axios";
 import { SummeryApi } from "@/app/common/SummeryApi";
 import { DisplayPriceInAud } from "@/utils/DisplayPriceInAud";
+import { PriceWithDiscount } from "@/utils/PriceWithDiscount";
 import { validURLConvert } from "@/utils/validURLConvart";
 import { RootState } from "@/redux/store";
 import { normaliseRole, portalPath, ROLES } from "@/utils/roles";
+import {
+    CHANGE_OPTS,
+    FINDER_QUESTIONS,
+    FinderProduct,
+    calcCost,
+    matchFinderProducts,
+    pickCalcTiles,
+} from "./productFinderLogic";
 
 type Sender = "bot" | "user";
 
@@ -20,12 +29,21 @@ interface ResultProduct {
     images: string[];
 }
 
-// Quick replies are either an action button (triggers a bot response) or a
-// direct nav link (routes straight to a page in the site).
+const toResultProduct = (p: FinderProduct): ResultProduct => ({
+    id: p.id,
+    title: p.title,
+    price: PriceWithDiscount(p.price, p.discount),
+    images: p.images,
+});
+
+// Quick replies are either a direct nav link (routes straight to a page),
+// a named action handled in handleQuickReply, or an onClick — used for the
+// dynamically generated steps of the Product & Cost assistant flow below.
 interface QuickReply {
     label: string;
     action?: string;
     href?: string;
+    onClick?: () => void;
 }
 
 interface Message {
@@ -37,7 +55,7 @@ interface Message {
 }
 
 const ACTION_REPLIES: QuickReply[] = [
-    { label: "Find a product", action: "find-product" },
+    { label: "Find Product & Cost", action: "product-cost" },
     { label: "Shipping info", action: "shipping-info" },
     { label: "Talk to a human", action: "talk-human" },
 ];
@@ -50,8 +68,24 @@ const Chatbot = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
     const [searching, setSearching] = useState(false);
-    const [awaitingSearch, setAwaitingSearch] = useState(false);
     const bottomRef = useRef<HTMLDivElement>(null);
+
+    // Loaded once the chat opens, and read via the ref (not the state
+    // closure) from the Product & Cost assistant's flow functions below, so
+    // they always see the latest products even though they're defined once.
+    const [allProducts, setAllProducts] = useState<FinderProduct[]>([]);
+    const allProductsRef = useRef<FinderProduct[]>([]);
+    useEffect(() => {
+        allProductsRef.current = allProducts;
+    }, [allProducts]);
+
+    useEffect(() => {
+        if (open && allProductsRef.current.length === 0) {
+            Axios({ ...SummeryApi.fetchProducts })
+                .then((res) => setAllProducts(res.data?.data ?? res.data ?? []))
+                .catch(() => {});
+        }
+    }, [open]);
 
     const user = useSelector((state: RootState) => state.userSlice?.user);
     const isLoggedIn = !!user;
@@ -132,15 +166,123 @@ const Chatbot = () => {
             });
         } finally {
             setSearching(false);
-            setAwaitingSearch(false);
         }
+    };
+
+    // Product & Cost assistant: a guided alternative to free-text search,
+    // reusing the same matching/pricing logic as the homepage Product
+    // Finder & Cost Calculator section so the two never give different
+    // answers to the same questions.
+    const startFinder = () => askFinderStep(0, {});
+
+    const askFinderStep = (step: number, answers: Record<string, string>) => {
+        const q = FINDER_QUESTIONS[step];
+        pushBot({
+            text: q.title,
+            quickReplies: q.options.map((option) => ({
+                label: option,
+                onClick: () => {
+                    const updated = { ...answers, [q.id]: option };
+                    const next = step + 1;
+                    if (next < FINDER_QUESTIONS.length) {
+                        askFinderStep(next, updated);
+                    } else {
+                        showFinderResult(updated);
+                    }
+                },
+            })),
+        });
+    };
+
+    const showFinderResult = (answers: Record<string, string>) => {
+        const results = matchFinderProducts(allProductsRef.current, answers);
+        pushBot({
+            text: results.length > 0
+                ? "Based on your answers, here's what we'd suggest:"
+                : "I couldn't find a close match — here's our range instead.",
+            products: results.map(toResultProduct),
+        });
+        pushBot({
+            text: "Want to see what that would cost you? Most of our range is also NDIS, Support at Home and CAPS claimable.",
+            quickReplies: [
+                { label: "Work out my cost", onClick: startCalc },
+                { label: "Start over", onClick: restartAssistant },
+            ],
+        });
+    };
+
+    const startCalc = () => {
+        const tiles = pickCalcTiles(allProductsRef.current);
+        if (tiles.length === 0) {
+            pushBot({ text: "We don't have any products loaded to cost right now — please try again shortly." });
+            return;
+        }
+        pushBot({
+            text: "Which product are you costing?",
+            quickReplies: tiles.map((p) => ({
+                label: p.title,
+                onClick: () => askChanges(p),
+            })),
+        });
+    };
+
+    const askChanges = (product: FinderProduct) => {
+        pushBot({
+            text: `How many changes a day, for ${product.title}?`,
+            quickReplies: CHANGE_OPTS.map((o, i) => ({
+                label: o.label,
+                onClick: () => showCalcResult(product, i),
+            })),
+        });
+    };
+
+    const showCalcResult = (product: FinderProduct, changeIndex: number) => {
+        const { unit, weekly, monthly, yearly, packsAMonth } = calcCost(
+            product,
+            changeIndex,
+            PriceWithDiscount(product.price, product.discount)
+        );
+        pushBot({
+            text:
+                `${DisplayPriceInAud(unit)} each, about ${packsAMonth} pack${packsAMonth === 1 ? "" : "s"} a month.\n\n` +
+                `Estimated cost — Weekly: ${DisplayPriceInAud(weekly)} · Monthly: ${DisplayPriceInAud(monthly)} · Yearly: ${DisplayPriceInAud(yearly)}.\n\n` +
+                `This is an estimate, not a quote. CAPS can pay up to $739.40 a year toward continence products — we can help you check eligibility.`,
+            products: [toResultProduct(product)],
+        });
+        pushBot({
+            text: "Anything else?",
+            quickReplies: [
+                { label: "Find the right product", onClick: startFinder },
+                { label: "Get an exact quote", href: "/apply/ndis" },
+                { label: "Start over", onClick: restartAssistant },
+            ],
+        });
+    };
+
+    const restartAssistant = () => {
+        pushBot({
+            text: "Sure — would you like to find the right product, or work out the cost?",
+            quickReplies: [
+                { label: "Find the right product", onClick: startFinder },
+                { label: "Work out my cost", onClick: startCalc },
+            ],
+        });
     };
 
     const handleQuickReply = (reply: QuickReply) => {
         pushUser(reply.label);
-        if (reply.action === "find-product") {
-            pushBot({ text: "Sure — what product are you looking for?" });
-            setAwaitingSearch(true);
+        if (reply.onClick) {
+            reply.onClick();
+            return;
+        }
+        if (reply.action === "product-cost") {
+            pushBot({
+                text: "I can find the right product for you, or work out what it will cost. Which would you like?",
+                quickReplies: [
+                    { label: "Find the right product", onClick: startFinder },
+                    { label: "Work out my cost", onClick: startCalc },
+                ],
+            });
             return;
         }
         if (reply.action === "shipping-info") {
@@ -163,11 +305,7 @@ const Chatbot = () => {
         const text = input.trim();
         if (!text) return;
         setInput("");
-        if (awaitingSearch) {
-            runProductSearch(text);
-        } else {
-            runProductSearch(text);
-        }
+        runProductSearch(text);
     };
 
     if (!open) {
@@ -219,7 +357,7 @@ const Chatbot = () => {
                                 <div className="max-w-[85%] flex flex-col gap-2">
                                     {m.text && (
                                         <div
-                                            className={`rounded-2xl px-3.5 py-2 text-sm leading-snug ${
+                                            className={`rounded-2xl px-3.5 py-2 text-sm leading-snug whitespace-pre-line ${
                                                 m.sender === "bot"
                                                     ? "bg-primary-hover text-text rounded-bl-sm"
                                                     : "bg-white border border-gray-200 text-gray-800 rounded-br-sm"

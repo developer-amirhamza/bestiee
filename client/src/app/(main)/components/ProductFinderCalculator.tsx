@@ -7,46 +7,14 @@ import { DisplayPriceInAud } from '@/utils/DisplayPriceInAud'
 import { PriceWithDiscount } from '@/utils/PriceWithDiscount'
 import { validURLConvert } from '@/utils/validURLConvart'
 import AddToCartButton from './UI/AddToCartBtn'
-
-interface Product {
-    id: string; title: string; images: string[]; price: number; discount: number
-    pack?: string | null; absorbency?: string | null
-}
-
-const QUESTIONS = [
-    { id: 'shopper', title: 'Who are you shopping for?', options: ['Myself', 'Someone I care for', 'An NDIS participant'] },
-    { id: 'type', title: 'What type of protection?', options: ['Pads or liners', 'Pull up pants', 'Bed protection', 'Not sure yet'] },
-    { id: 'absorbency', title: 'How much absorbency?', options: ['Light', 'Moderate', 'Heavy or overnight'] },
-    { id: 'pack', title: 'Preferred pack?', options: ['A single pack', 'A monthly bundle', 'Show me everything'] },
-] as const
-
-const TYPE_KEYWORDS: Record<string, string[]> = {
-    'Pads or liners': ['pad', 'liner'],
-    'Pull up pants': ['pull-up', 'pullup', 'pants'],
-    'Bed protection': ['bed', 'underpad', 'protector', 'bluey', 'mat'],
-}
-const ABSORBENCY_KEYWORDS: Record<string, string[]> = {
-    'Light': ['light', 'mini'],
-    'Moderate': ['moderate', 'regular', 'medium'],
-    'Heavy or overnight': ['heavy', 'overnight', 'maxi', 'super', 'extra'],
-}
-
-const CALC_KEYWORDS: { label: string; keywords: string[] }[] = [
-    { label: 'Pull up pants', keywords: ['pull-up', 'pullup', 'pants'] },
-    { label: 'Pads', keywords: ['pad', 'liner'] },
-    { label: 'Bed protection', keywords: ['bed', 'underpad', 'protector', 'bluey', 'mat'] },
-]
-
-const CHANGE_OPTS = [
-    { label: '1 to 2', n: 1.5 },
-    { label: '3 to 4', n: 3.5 },
-    { label: '5 or more', n: 5.5 },
-]
-
-const packQty = (pack?: string | null) => {
-    const m = (pack ?? '').match(/(\d+)/)
-    return m ? Math.max(1, parseInt(m[1], 10)) : 1
-}
+import {
+    CHANGE_OPTS,
+    FINDER_QUESTIONS as QUESTIONS,
+    FinderProduct as Product,
+    calcCost,
+    matchFinderProducts,
+    pickCalcTiles,
+} from './productFinderLogic'
 
 const productUrl = (p: Product) => `/product/${validURLConvert(p.title)}_${p.id}`
 
@@ -66,26 +34,7 @@ const ProductFinderPanel = ({ allProducts }: { allProducts: Product[] }) => {
         if (next < QUESTIONS.length) { setStep(next); return }
         setStep(4)
         setLoading(true)
-        const typeKw = TYPE_KEYWORDS[updated.type] ?? []
-        const absKw = ABSORBENCY_KEYWORDS[updated.absorbency] ?? []
-        const wantsBundle = updated.pack === 'A monthly bundle'
-        const wantsSingle = updated.pack === 'A single pack'
-        const scored = allProducts
-            .map((p) => {
-                const title = p.title.toLowerCase()
-                const abs = (p.absorbency ?? '').toLowerCase()
-                let score = 0
-                if (typeKw.some((k) => title.includes(k))) score += 3
-                if (absKw.some((k) => abs.includes(k) || title.includes(k))) score += 2
-                if (wantsBundle && /bundle|pack of (?:[2-9]\d|1\d\d)/i.test(p.pack ?? '')) score += 1
-                if (wantsSingle && !/bundle/i.test(p.pack ?? '')) score += 1
-                return { p, score }
-            })
-            .filter((s) => s.score > 0)
-            .sort((a, b) => b.score - a.score)
-            .map((s) => s.p)
-            .slice(0, 3)
-        setResults(scored.length > 0 ? scored : allProducts.slice(0, 3))
+        setResults(matchFinderProducts(allProducts, updated))
         setLoading(false)
     }
 
@@ -168,15 +117,7 @@ const ProductFinderPanel = ({ allProducts }: { allProducts: Product[] }) => {
 }
 
 const CostCalculatorPanel = ({ allProducts }: { allProducts: Product[] }) => {
-    const tiles: Product[] = []
-    for (const { keywords } of CALC_KEYWORDS) {
-        const match = allProducts.find((p) => !tiles.includes(p) && keywords.some((k) => p.title.toLowerCase().includes(k)))
-        if (match) tiles.push(match)
-    }
-    for (const p of allProducts) {
-        if (tiles.length >= 3) break
-        if (!tiles.includes(p)) tiles.push(p)
-    }
+    const tiles = pickCalcTiles(allProducts)
 
     const [productId, setProductId] = useState<string | null>(null)
     const [changeIndex, setChangeIndex] = useState(1)
@@ -186,7 +127,6 @@ const CostCalculatorPanel = ({ allProducts }: { allProducts: Product[] }) => {
     }, [tiles, productId])
 
     const product = tiles.find((p) => p.id === productId) ?? tiles[0]
-    const opt = CHANGE_OPTS[changeIndex]
 
     if (!product) {
         return (
@@ -205,12 +145,7 @@ const CostCalculatorPanel = ({ allProducts }: { allProducts: Product[] }) => {
         )
     }
 
-    const qty = packQty(product.pack)
-    const unit = PriceWithDiscount(product.price, product.discount) / qty
-    const weekly = unit * opt.n * 7
-    const monthly = (weekly * 52) / 12
-    const yearly = weekly * 52
-    const packsAMonth = Math.ceil((opt.n * 31) / qty)
+    const { unit, weekly, monthly, yearly, packsAMonth } = calcCost(product, changeIndex, PriceWithDiscount(product.price, product.discount))
 
     return (
         <div className="rounded-2xl p-6 md:p-8 bg-secondary text-background">
