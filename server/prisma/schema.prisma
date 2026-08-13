@@ -8,75 +8,55 @@ datasource db {
 }
 
 model User {
-  id                     String    @id @default(dbgenerated("gen_random_uuid()"))
-  firstName              String?
-  lastName               String?
-  email                  String    @unique
+  id                     String              @id @default(dbgenerated("gen_random_uuid()"))
+  email                  String              @unique
   password               String
-  verify_email           Boolean?  @default(false)
-  status                 String?   @default("ACTIVE")
+  verify_email           Boolean?            @default(false)
+  status                 String?             @default("ACTIVE")
   avatar                 String?
   mobile                 String?
-  last_login_date        DateTime? @db.Timestamp(6)
+  last_login_date        DateTime?           @db.Timestamp(6)
   refresh_token          String?
   forgot_password_otp    String?
-  forgot_password_expire DateTime? @db.Timestamp(6)
-  createdAt              DateTime? @default(now()) @db.Timestamp(6)
-  updatedAt              DateTime? @default(now()) @db.Timestamp(6)
-  // Role values: CONSUMER | TRADE | NDIS_COORDINATOR | ADMIN
-  // (legacy "USER" is treated as CONSUMER by the app)
-  role                   String?   @default("CONSUMER")
-  cart                   Cart?
-  reviews                Reviews[]
-  order                  Order[]
+  forgot_password_expire DateTime?           @db.Timestamp(6)
+  createdAt              DateTime?           @default(now()) @db.Timestamp(6)
+  updatedAt              DateTime?           @default(now()) @db.Timestamp(6)
+  role                   String?             @default("CONSUMER")
+  firstName              String?
+  lastName               String?
   accountApplication     AccountApplication?
-  quotes                 Quote[]
-  standingOrders         StandingOrder[]
-  subscriptions          Subscription[]
+  cart                   Cart?
   deliverySites          DeliverySite[]
   negotiatedPrices       NegotiatedPrice[]
+  quotes                 Quote[]
+  reviews                Reviews[]
+  standingOrders         StandingOrder[]
+  subscriptions          Subscription[]
+  order                  Order[]
 }
 
-// Trade / NDIS coordinator account application.
-// A consumer applies for an upgraded account; an admin approves it,
-// which flips the user's role and grants access to the matching portal.
 model AccountApplication {
-  id              String   @id @default(dbgenerated("gen_random_uuid()"))
-  userId          String   @unique
-  // Which portal they are applying for: TRADE | NDIS_COORDINATOR
-  requestedRole   String
-  // PENDING | APPROVED | REJECTED
-  status          String   @default("PENDING")
-  // Business / organisation details
-  businessName    String?
-  abn             String?
-  businessType    String?
-  contactName     String?
-  contactPhone    String?
-  // NDIS-specific
-  organisation    String?
-  // 30-day account invoicing flag (admin sets on approval)
-  creditApproved  Boolean  @default(false)
-  notes           String?
-  reviewedBy      String?
-  reviewedAt      DateTime?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String    @id @default(dbgenerated("gen_random_uuid()"))
+  userId         String    @unique
+  requestedRole  String
+  status         String    @default("PENDING")
+  businessName   String?
+  abn            String?
+  businessType   String?
+  contactName    String?
+  contactPhone   String?
+  organisation   String?
+  creditApproved Boolean   @default(false)
+  notes          String?
+  reviewedBy     String?
+  reviewedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([status])
 }
 
-// Global, admin-editable settings. Stored as key/value so the team can change
-// pricing rules without a code change. Values are JSON to allow numbers/bools/strings.
-// Known keys (with defaults applied in the pricing service):
-//   gstEnabled (bool)                 - whether GST is added at all
-//   gstRate (number, e.g. 0.10)       - GST rate when enabled
-//   ndisAnnualDiscountPct (number)    - % off for a 12-month NDIS supply
-//   consumerSubscriptionDiscountPct   - % off recurring consumer orders
-//   deliveryMode ("FLAT"|"POSTCODE")  - how delivery is charged
-//   deliveryFlatFee (number)          - flat delivery fee
-//   freeDeliveryThreshold (number)    - order total above which delivery is free (0 = off)
 model Setting {
   id        String   @id @default(dbgenerated("gen_random_uuid()"))
   key       String   @unique
@@ -84,13 +64,9 @@ model Setting {
   updatedAt DateTime @updatedAt
 }
 
-// Volume pricing tiers for B2B trade accounts. A tier applies to a product
-// when the ordered carton quantity is >= minQuantity. The highest matching
-// tier wins. If productId is null the tier is a global default.
 model PricingTier {
   id           String   @id @default(dbgenerated("gen_random_uuid()"))
   productId    String?
-  // null = TRADE default; could be extended to other roles later
   role         String   @default("TRADE")
   minQuantity  Int
   pricePerUnit Float
@@ -101,8 +77,6 @@ model PricingTier {
   @@index([productId, role, minQuantity])
 }
 
-// Per-product per-role price overrides (e.g. a specific NDIS price for a product).
-// Optional — when absent the pricing service falls back to the product's retail price.
 model PriceOverride {
   id        String   @id @default(dbgenerated("gen_random_uuid()"))
   productId String
@@ -114,7 +88,6 @@ model PriceOverride {
   @@unique([productId, role])
 }
 
-// Multi-site trade account — one account, multiple delivery sites (Phase 3).
 model DeliverySite {
   id        String   @id @default(dbgenerated("gen_random_uuid()"))
   userId    String
@@ -130,8 +103,6 @@ model DeliverySite {
   @@index([userId])
 }
 
-// Negotiated (custom) pricing for a specific account, overriding volume tiers
-// for large accounts (Phase 3). Highest priority in the pricing resolver.
 model NegotiatedPrice {
   id        String   @id @default(dbgenerated("gen_random_uuid()"))
   userId    String
@@ -145,19 +116,14 @@ model NegotiatedPrice {
   @@index([userId])
 }
 
-// Consumer subscription — recurring auto-delivery so customers never run out.
-// The scheduler generates a real Order each cycle and applies the configurable
-// consumer subscription discount.
 model Subscription {
   id              String   @id @default(dbgenerated("gen_random_uuid()"))
   userId          String
-  // ACTIVE | PAUSED | CANCELLED
   status          String   @default("ACTIVE")
   intervalDays    Int      @default(30)
   nextRunAt       DateTime
   shippingAddress String
   phone           String
-  // Line items: [{ productId, quantity }]
   items           Json
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -167,19 +133,14 @@ model Subscription {
   @@index([status, nextRunAt])
 }
 
-// Standing / recurring trade order — scheduled auto-delivery for trade accounts
-// (e.g. aged care facilities). The scheduler generates a real Order each cycle.
 model StandingOrder {
   id              String   @id @default(dbgenerated("gen_random_uuid()"))
   userId          String
-  // ACTIVE | PAUSED | CANCELLED
   status          String   @default("ACTIVE")
-  // Cadence in days (e.g. 30 = monthly)
   intervalDays    Int      @default(30)
   nextRunAt       DateTime
   shippingAddress String
   phone           String
-  // Line items: [{ productId, quantity }]
   items           Json
   paymentMethod   String   @default("Invoice")
   createdAt       DateTime @default(now())
@@ -190,83 +151,66 @@ model StandingOrder {
   @@index([status, nextRunAt])
 }
 
-// NDIS quote created by a support coordinator on behalf of a participant.
 model Quote {
-  id              String      @id @default(dbgenerated("gen_random_uuid()"))
-  quoteNumber     String      @unique
-  // Coordinator who created the quote
-  userId          String
-  // DRAFT | SENT | CONVERTED
-  status          String      @default("DRAFT")
-  participantRef  String?
+  id               String      @id @default(dbgenerated("gen_random_uuid()"))
+  quoteNumber      String      @unique
+  userId           String
+  status           String      @default("DRAFT")
+  participantRef   String?
   planManagerEmail String?
-  // One-off | Monthly | Annual
-  supplyPeriod    String      @default("Monthly")
-  // Totals (computed via the pricing service's buildTotals)
-  subtotal        Float       @default(0)
-  discount        Float       @default(0)
-  delivery        Float       @default(0)
-  gst             Float       @default(0)
-  total           Float       @default(0)
-  validUntil      DateTime?
-  notes           String?
-  // Set when the quote is converted into a real order
+  supplyPeriod     String      @default("Monthly")
+  subtotal         Float       @default(0)
+  discount         Float       @default(0)
+  delivery         Float       @default(0)
+  gst              Float       @default(0)
+  total            Float       @default(0)
+  validUntil       DateTime?
+  notes            String?
   convertedOrderId String?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items           QuoteItem[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  user             User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items            QuoteItem[]
 
   @@index([userId])
   @@index([status])
 }
 
-// General enquiry inbox. Covers the NDIS "funding support" path (a coordinator
-// asks for payment-plan / hardship options when funding doesn't cover a quote)
-// and B2B trade enquiries. Surfaced in the admin dashboard.
 model Enquiry {
-  id            String   @id @default(dbgenerated("gen_random_uuid()"))
-  // FUNDING_SUPPORT | TRADE | GENERAL
-  type          String   @default("GENERAL")
-  // NEW | IN_PROGRESS | RESOLVED
-  status        String   @default("NEW")
-  // Who raised it (logged-in user if available)
-  userId        String?
-  name          String?
-  email         String?
-  phone         String?
-  // Funding-support specifics
-  participantNeed String?
+  id               String    @id @default(dbgenerated("gen_random_uuid()"))
+  type             String    @default("GENERAL")
+  status           String    @default("NEW")
+  userId           String?
+  name             String?
+  email            String?
+  phone            String?
+  participantNeed  String?
   availableFunding String?
-  message       String?
-  // Optional link to the quote that triggered the enquiry
-  quoteId       String?
-  handledBy     String?
-  handledAt     DateTime?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  message          String?
+  quoteId          String?
+  handledBy        String?
+  handledAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   @@index([type])
   @@index([status])
 }
 
 model QuoteItem {
-  id           String   @id @default(dbgenerated("gen_random_uuid()"))
-  quoteId      String
-  productId    String
-  productName  String
-  size         String?
-  absorbency   String?
-  // Daily pads usage entered by the coordinator
-  dailyPads    Int      @default(0)
-  // Days in the chosen supply period (One-off=pack qty, Monthly=30, Annual=365)
-  days         Int      @default(0)
-  // total pads = dailyPads * days
-  totalPads    Int      @default(0)
-  unitPrice    Float    @default(0)
-  lineTotal    Float    @default(0)
-  createdAt    DateTime @default(now())
-  quote        Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  id          String   @id @default(dbgenerated("gen_random_uuid()"))
+  quoteId     String
+  productId   String
+  productName String
+  size        String?
+  absorbency  String?
+  dailyPads   Int      @default(0)
+  days        Int      @default(0)
+  totalPads   Int      @default(0)
+  unitPrice   Float    @default(0)
+  lineTotal   Float    @default(0)
+  createdAt   DateTime @default(now())
+  quote       Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
 
   @@index([quoteId])
 }
@@ -281,7 +225,6 @@ model Product {
   stock         Int          @default(0)
   colors        String[]
   categoryId    String?
-  more_details  Json?
   isActive      Boolean      @default(true)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
@@ -289,11 +232,11 @@ model Product {
   deletedAt     DateTime?
   sizes         String[]
   subcategoryId String?
-  // Optional product-detail fields (all shown only when set):
-  pricingNotes  String?
-  pack          String?
   absorbency    String?
   keyFeatures   String[]     @default([])
+  pack          String?
+  pricingNotes  String?
+  more_details  Json?
   cartItems     CartItem[]
   category      Category?    @relation(fields: [categoryId], references: [id])
   subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
@@ -349,17 +292,15 @@ model Cart {
 }
 
 model CartItem {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
-  cartId    String
-  productId String
-  quantity  Int      @default(1)
-  // Set when the shopper opted into "Subscribe & Save" for this item
-  // (2/4/6/12-month auto-refill). null = one-time purchase.
+  id                       String   @id @default(dbgenerated("gen_random_uuid()"))
+  cartId                   String
+  productId                String
+  quantity                 Int      @default(1)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
   subscriptionIntervalDays Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cart                     Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product                  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([cartId, productId])
 }
@@ -375,30 +316,26 @@ model Order {
   phone                 String
   email                 String
   subtotal              Float
-  // Amount knocked off subtotal by a "Subscribe & Save" interval discount.
-  discount              Float       @default(0)
   shippingCost          Float       @default(0)
   tax                   Float       @default(0)
   total                 Float
   paymentMethod         String      @default("Stripe")
   paymentStatus         String      @default("Pending")
   orderStatus           String      @default("Pending")
-  // NDIS / Home Care Package funding info when the order is paid from a
-  // participant's funding rather than by card. Shape depends on paymentMethod:
-  //   NDIS: { participantName, ndisNumber, dob, fundingType, approved }
-  //   HCP:  { participantName, hcpNumber, providerEmail, approved }
-  fundingDetails        Json?
   statusHistory         Json?
   createdAt             DateTime    @default(now())
   updatedAt             DateTime    @updatedAt
   stripeSessionId       String?     @unique
   stripePaymentIntentId String?
+  discount              Float       @default(0)
   firstName             String?
   lastName              String?
+  fundingDetails        Json?
+  adminNote             String?
+  orderNote             String?
   items                 OrderItem[]
   user                  User?       @relation(fields: [userId], references: [id])
-  orderNote             String?
-  adminNote             String?
+
   @@map("orders")
 }
 
@@ -451,20 +388,12 @@ model Blog {
   @@index([authorId])
 }
 
-
-
-// Internal admin-team task / note board ("Team Tasks" admin page).
-// Any admin can write a task/requirement/note; any admin can accept a task
-// and move it through OPEN → IN_PROGRESS → DONE.
 model TeamTask {
   id             String    @id @default(dbgenerated("gen_random_uuid()"))
-  // TASK | REQUIREMENT | NOTE
   type           String    @default("TASK")
   title          String
   description    String?
-  // OPEN | IN_PROGRESS | DONE
   status         String    @default("OPEN")
-  // LOW | NORMAL | HIGH
   priority       String    @default("NORMAL")
   createdById    String
   createdByName  String
@@ -479,17 +408,12 @@ model TeamTask {
   @@index([createdAt])
 }
 
-// Pre-launch waitlist signup (marketing popup). Master record per the launch
-// plan: identity + postcode (sales evidence), country (export interest),
-// buyer type (segmenting + B2B routing), consent timestamp (Spam Act 2003),
-// and UTM source for ad attribution.
 model WaitlistEntry {
   id        String    @id @default(dbgenerated("gen_random_uuid()"))
   name      String
   email     String    @unique
   postcode  String
   country   String    @default("Australia")
-  // USER | CARER | PHARMACY | AGED_CARE | NDIS_PROVIDER | DISTRIBUTOR
   buyerType String
   consent   Boolean   @default(false)
   consentAt DateTime?
@@ -500,29 +424,19 @@ model WaitlistEntry {
   @@index([createdAt])
 }
 
-// Free training sessions (homepage "Free training sessions" carousel).
-// LIVE sessions have a real startsAt and an optional capacity; ON_DEMAND
-// sessions are always open (capacity null = unlimited). Spots left is
-// derived at query time from registrations.length, never stored, so it
-// can't drift out of sync with the actual registration count.
 model TrainingSession {
-  id            String    @id @default(dbgenerated("gen_random_uuid()"))
-  // Free text badge shown on the card, e.g. "Live webinar", "On demand", "For pharmacies".
+  id            String                 @id @default(dbgenerated("gen_random_uuid()"))
   tag           String
   title         String
   description   String
-  // Who the session is aimed at, e.g. "Family carers".
   audience      String
   durationMin   Int
-  // LIVE | ON_DEMAND
-  sessionType   String    @default("LIVE")
+  sessionType   String                 @default("LIVE")
   startsAt      DateTime?
-  // null = unlimited / on-demand, no cap.
   capacity      Int?
-  isPublished   Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
+  isPublished   Boolean                @default(true)
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
   registrations TrainingRegistration[]
 
   @@index([isPublished])
@@ -530,32 +444,25 @@ model TrainingSession {
 }
 
 model TrainingRegistration {
-  id         String   @id @default(dbgenerated("gen_random_uuid()"))
-  sessionId  String
-  session    TrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  name       String
-  email      String
-  createdAt  DateTime @default(now())
+  id        String          @id @default(dbgenerated("gen_random_uuid()"))
+  sessionId String
+  name      String
+  email     String
+  createdAt DateTime        @default(now())
+  session   TrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@unique([sessionId, email])
   @@index([sessionId])
 }
 
-// Curated highlights from real Reddit threads for the homepage "From the
-// community" feed. Admin-managed, not a live API pull — url always points
-// at the real thread so a reader can verify/read the original discussion.
 model RedditPost {
   id          String   @id @default(dbgenerated("gen_random_uuid()"))
-  // e.g. "r/AgingParents"
   subreddit   String
   title       String
-  // e.g. "u/quiet_kettle"
   author      String
-  // Short label chip, e.g. "Carer win", "Funding", "Product help"
   flair       String
   upvotes     Int      @default(0)
   comments    Int      @default(0)
-  // Link to the real Reddit thread
   url         String
   postedAt    DateTime @default(now())
   isPublished Boolean  @default(true)
