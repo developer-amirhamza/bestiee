@@ -127,8 +127,8 @@ export default function WaitlistPopup() {
             <button
                 onClick={() => setOpen(true)}
                 aria-label="Join the waitlist"
-                className="fixed bottom-20 right-5 cursor-pointer  z-40 rounded-full px-5 py-3 text-sm font-semibold text-white shadow-lg transition-transform hover:-translate-y-0.5"
-                style={{ backgroundColor: CORAL }}
+                className="fixed bottom-20 right-5 cursor-pointer bg-secondary-hover hover:bg-secondary duration-300  z-40 rounded-full px-4 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5"
+
             >
                 ✨ Join the waitlist
             </button>
@@ -140,7 +140,7 @@ export default function WaitlistPopup() {
 
     return (
         <div
-            className="fixed inset-0 z-[80] flex items-center justify-center p-4 "
+            className="fixed inset-0 z-80 flex items-center justify-center p-4 "
             style={{ backgroundColor: "rgba(58,46,40,0.55)" }}
             onClick={close}
         >

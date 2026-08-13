@@ -12,7 +12,6 @@
   --title:#20302C;
   --paragraph:#141E1C;
   --secondary-light:#D8E8DC;
-
   --shadow: 0px 4.42184px 107.23px rgb(229, 224, 211);
 }
 
@@ -55,9 +54,8 @@ body {
   background: #F7F4EF;
   color: var(--foreground);
   font-family: "DM Sans", "DM Sans Fallback", sans-serif;
-  overflow-x: hidden;
+  overflow: hidden;
   scroll-behavior: smooth;
-
 }
 
 .btn {

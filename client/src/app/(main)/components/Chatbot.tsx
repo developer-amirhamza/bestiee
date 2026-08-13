@@ -325,7 +325,7 @@ const Chatbot = () => {
         }
         if (reply.action === "talk-human") {
             pushBot({
-                text: "No problem — you can reach our team via the Contact page, or call 1300 243 253.",
+                text: "No problem — you can reach our team via the Contact page, or call 0481 707 758 / 0431 377 132.",
                 quickReplies: QUICK_REPLIES,
             });
             return;
@@ -344,7 +344,7 @@ const Chatbot = () => {
             <button
                 onClick={() => setOpen(true)}
                 aria-label="Chat with Bestiee"
-                className="fixed bottom-5 right-5 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-secondary text-white shadow-lg hover:bg-secondary-hover transition-colors"
+                className="fixed bottom-5 right-5 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-secondary-hover text-white shadow-lg hover:bg-secondary transition-colors"
             >
                 <RiChat3Fill size={26} />
             </button>
