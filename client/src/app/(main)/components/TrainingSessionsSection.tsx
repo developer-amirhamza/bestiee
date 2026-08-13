@@ -71,8 +71,8 @@ const RegisterModal = ({
 
     return (
         <>
-            <div onClick={onClose} className="fixed inset-0 bg-black/50 z-[92]" />
-            <div className="fixed top-[10vh] left-1/2 -translate-x-1/2 w-[480px] max-w-[92vw] bg-background rounded-2xl shadow-2xl z-[93] overflow-hidden">
+            <div onClick={onClose} className="fixed inset-0 bg-black/50 z-92" />
+            <div className="fixed top-[10vh] left-1/2 -translate-x-1/2 w-120 max-w-[92vw] bg-background rounded-2xl shadow-2xl z-93 overflow-hidden">
                 <div className="flex items-center justify-between px-6 py-5 border-b border-primary-hover">
                     <h3 className="font-secondary text-xl text-text-hover">Reserve your spot</h3>
                     <button onClick={onClose} aria-label="Close" className="text-2xl leading-none text-text hover:text-text-hover">×</button>
@@ -205,8 +205,8 @@ const TrainingSessionsSection = () => {
                                     <span className="self-start bg-[#d8e8dc] text-secondary font-semibold rounded-full px-3.5 py-1.5 text-sm">
                                         {session.tag}
                                     </span>
-                                    <h3 className="font-secondary text-xl leading-tight mt-3 mb-2">{session.title}</h3>
-                                    <p className="text-text leading-snug flex-1">{session.description}</p>
+                                    <h3 className="font-primary text-xl leading-tight text-text mt-3 mb-2">{session.title}</h3>
+                                    <p className=" leading-snug flex-1">{session.description}</p>
                                     <div className="flex flex-col gap-1 text-sm text-text border-t border-primary-hover pt-3 mt-3.5">
                                         <span className="text-text-hover font-bold">{when(session)}</span>
                                         <span>{session.durationMin} min · {session.audience}</span>
@@ -215,7 +215,7 @@ const TrainingSessionsSection = () => {
                                     <button
                                         onClick={() => setActiveSession(session)}
                                         disabled={session.capacity != null && (session.spotsLeft ?? 0) <= 0}
-                                        className="mt-4 bg-secondary hover:bg-secondary-hover text-background font-semibold rounded-full py-3 transition-colors disabled:opacity-50"
+                                        className="mt-4 bg-secondary-hover hover:bg-secondary text-background font-semibold rounded-full py-3 transition-colors disabled:opacity-50"
                                     >
                                         {session.capacity != null && (session.spotsLeft ?? 0) <= 0 ? 'Fully booked' : 'Reserve my spot'}
                                     </button>

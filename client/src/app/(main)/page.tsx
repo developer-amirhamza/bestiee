@@ -55,10 +55,11 @@ export default function Home() {
       <CareGuidesSection />
       <div id="community" className="scroll-mt-27.5">
         <CommunitySection />
-        <TestimonialsSection />
       </div>
       <RedditFeedSection />
       <TrainingSessionsSection />
+        <TestimonialsSection />
+
       {/* <TrustedStrip /> */}
       {/* <div className="grid container bg-primary  gap-10">
         {home_posts.map((post, index) => (
