@@ -41,6 +41,8 @@ const toResultProduct = (p: FinderProduct): ResultProduct => ({
 // dynamically generated steps of the Product & Cost assistant flow below.
 interface QuickReply {
     label: string;
+    description?: string;
+    icon?: string;
     action?: string;
     href?: string;
     onClick?: () => void;
@@ -51,6 +53,10 @@ interface Message {
     sender: Sender;
     text?: string;
     quickReplies?: QuickReply[];
+    // "card" = the mode-picker's big icon+description tiles, "pill" = the
+    // assistant's rounded-full option buttons — both match the Product &
+    // Cost Assistant design. Undefined keeps the bot's existing nav style.
+    replyStyle?: "card" | "pill";
     products?: ResultProduct[];
 }
 
@@ -69,6 +75,11 @@ const Chatbot = () => {
     const [input, setInput] = useState("");
     const [searching, setSearching] = useState(false);
     const bottomRef = useRef<HTMLDivElement>(null);
+
+    // Set once the visitor enters the Product & Cost assistant flow — swaps
+    // the header/footer to match that design's dedicated widget instead of
+    // the general "Chat with Bestiee" chrome.
+    const [assistantSubtitle, setAssistantSubtitle] = useState<string | null>(null);
 
     // Loaded once the chat opens, and read via the ref (not the state
     // closure) from the Product & Cost assistant's flow functions below, so
@@ -173,12 +184,36 @@ const Chatbot = () => {
     // reusing the same matching/pricing logic as the homepage Product
     // Finder & Cost Calculator section so the two never give different
     // answers to the same questions.
+    const showModePicker = (text: string) => {
+        setAssistantSubtitle("Pick a tool");
+        pushBot({
+            text,
+            replyStyle: "card",
+            quickReplies: [
+                {
+                    label: "Find the right product",
+                    icon: "🧭",
+                    description: "Four questions. Size, product and packs a month.",
+                    onClick: startFinder,
+                },
+                {
+                    label: "Work out my cost",
+                    icon: "🧮",
+                    description: "Two questions. Weekly, monthly and yearly.",
+                    onClick: startCalc,
+                },
+            ],
+        });
+    };
+
     const startFinder = () => askFinderStep(0, {});
 
     const askFinderStep = (step: number, answers: Record<string, string>) => {
+        setAssistantSubtitle(`Product finder · ${step + 1} of ${FINDER_QUESTIONS.length}`);
         const q = FINDER_QUESTIONS[step];
         pushBot({
             text: q.title,
+            replyStyle: "pill",
             quickReplies: q.options.map((option) => ({
                 label: option,
                 onClick: () => {
@@ -195,6 +230,7 @@ const Chatbot = () => {
     };
 
     const showFinderResult = (answers: Record<string, string>) => {
+        setAssistantSubtitle("Your recommendation");
         const results = matchFinderProducts(allProductsRef.current, answers);
         pushBot({
             text: results.length > 0
@@ -204,6 +240,7 @@ const Chatbot = () => {
         });
         pushBot({
             text: "Want to see what that would cost you? Most of our range is also NDIS, Support at Home and CAPS claimable.",
+            replyStyle: "pill",
             quickReplies: [
                 { label: "Work out my cost", onClick: startCalc },
                 { label: "Start over", onClick: restartAssistant },
@@ -217,8 +254,10 @@ const Chatbot = () => {
             pushBot({ text: "We don't have any products loaded to cost right now — please try again shortly." });
             return;
         }
+        setAssistantSubtitle("Cost calculator · 1 of 2");
         pushBot({
             text: "Which product are you costing?",
+            replyStyle: "pill",
             quickReplies: tiles.map((p) => ({
                 label: p.title,
                 onClick: () => askChanges(p),
@@ -227,8 +266,10 @@ const Chatbot = () => {
     };
 
     const askChanges = (product: FinderProduct) => {
+        setAssistantSubtitle("Cost calculator · 2 of 2");
         pushBot({
             text: `How many changes a day, for ${product.title}?`,
+            replyStyle: "pill",
             quickReplies: CHANGE_OPTS.map((o, i) => ({
                 label: o.label,
                 onClick: () => showCalcResult(product, i),
@@ -237,6 +278,7 @@ const Chatbot = () => {
     };
 
     const showCalcResult = (product: FinderProduct, changeIndex: number) => {
+        setAssistantSubtitle("Your estimated cost");
         const { unit, weekly, monthly, yearly, packsAMonth } = calcCost(
             product,
             changeIndex,
@@ -251,6 +293,7 @@ const Chatbot = () => {
         });
         pushBot({
             text: "Anything else?",
+            replyStyle: "pill",
             quickReplies: [
                 { label: "Find the right product", onClick: startFinder },
                 { label: "Get an exact quote", href: "/apply/ndis" },
@@ -260,13 +303,7 @@ const Chatbot = () => {
     };
 
     const restartAssistant = () => {
-        pushBot({
-            text: "Sure — would you like to find the right product, or work out the cost?",
-            quickReplies: [
-                { label: "Find the right product", onClick: startFinder },
-                { label: "Work out my cost", onClick: startCalc },
-            ],
-        });
+        showModePicker("Sure — would you like to find the right product, or work out the cost?");
     };
 
     const handleQuickReply = (reply: QuickReply) => {
@@ -276,13 +313,7 @@ const Chatbot = () => {
             return;
         }
         if (reply.action === "product-cost") {
-            pushBot({
-                text: "I can find the right product for you, or work out what it will cost. Which would you like?",
-                quickReplies: [
-                    { label: "Find the right product", onClick: startFinder },
-                    { label: "Work out my cost", onClick: startCalc },
-                ],
-            });
+            showModePicker("I can find the right product for you, or work out what it will cost. Which would you like?");
             return;
         }
         if (reply.action === "shipping-info") {
@@ -324,13 +355,18 @@ const Chatbot = () => {
         <div className="fixed bottom-5 right-5 z-50 w-[92vw] max-w-sm flex flex-col rounded-xl overflow-hidden shadow-2xl border border-gray-200 bg-white">
             {/* Header */}
             <div className="flex items-center justify-between bg-secondary text-white px-4 py-3">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                        <RiChat3Fill size={16} />
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-white/18 flex items-center justify-center text-xl shrink-0">
+                        {assistantSubtitle ? "✦" : <RiChat3Fill size={16} />}
                     </div>
-                    <span className="font-semibold">Chat with Bestiee</span>
+                    <div className="min-w-0">
+                        <span className="font-bold text-[19px] block leading-tight">
+                            {assistantSubtitle ? "Product & Cost Assistant" : "Chat with Bestiee"}
+                        </span>
+                        {assistantSubtitle && <span className="block text-sm text-white/80 leading-tight">{assistantSubtitle}</span>}
+                    </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                     <button
                         onClick={() => setMinimised((m) => !m)}
                         aria-label="Minimise"
@@ -393,7 +429,52 @@ const Chatbot = () => {
                                         </div>
                                     )}
 
-                                    {m.quickReplies && (
+                                    {m.quickReplies && m.replyStyle === "card" && (
+                                        <div className="flex flex-col gap-2.5">
+                                            {m.quickReplies.map((r) => (
+                                                <button
+                                                    key={r.label}
+                                                    onClick={() => handleQuickReply(r)}
+                                                    className="text-left bg-white border-[1.6px] border-secondary rounded-2xl px-4 py-3.5 flex items-center gap-3 hover:bg-secondary-light/50 transition-colors"
+                                                >
+                                                    <span className="shrink-0 w-10 h-10 rounded-[11px] bg-secondary-light flex items-center justify-center text-xl">
+                                                        {r.icon}
+                                                    </span>
+                                                    <span className="min-w-0">
+                                                        <span className="block text-base font-bold text-secondary">{r.label}</span>
+                                                        <span className="block text-sm text-gray-600 leading-snug">{r.description}</span>
+                                                    </span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {m.quickReplies && m.replyStyle === "pill" && (
+                                        <div className="flex flex-wrap gap-2">
+                                            {m.quickReplies.map((r) =>
+                                                r.href ? (
+                                                    <Link
+                                                        key={r.label}
+                                                        href={r.href}
+                                                        onClick={() => setOpen(false)}
+                                                        className="border-[1.6px] border-secondary text-secondary font-semibold rounded-full px-4.5 py-2 text-sm hover:bg-secondary-light/50 transition-colors"
+                                                    >
+                                                        {r.label}
+                                                    </Link>
+                                                ) : (
+                                                    <button
+                                                        key={r.label}
+                                                        onClick={() => handleQuickReply(r)}
+                                                        className="border-[1.6px] border-secondary text-secondary font-semibold rounded-full px-4.5 py-2 text-sm hover:bg-secondary-light/50 transition-colors"
+                                                    >
+                                                        {r.label}
+                                                    </button>
+                                                )
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {m.quickReplies && !m.replyStyle && (
                                         <div className="grid grid-cols-2 gap-2">
                                             {m.quickReplies.map((r) =>
                                                 r.href ? (
@@ -430,23 +511,33 @@ const Chatbot = () => {
                         <div ref={bottomRef} />
                     </div>
 
-                    {/* Input */}
-                    <div className="flex items-center gap-2 border-t border-gray-200 bg-white px-3 py-2">
-                        <input
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                            placeholder="How can I help you?"
-                            className="flex-1 text-sm outline-none px-2 py-2 bg-transparent text-gray-700 placeholder:text-gray-400"
-                        />
-                        <button
-                            onClick={handleSend}
-                            aria-label="Send"
-                            className="flex items-center justify-center w-9 h-9 rounded-full bg-secondary text-white hover:bg-secondary transition-colors shrink-0"
-                        >
-                            <RiSendPlaneFill size={14} />
-                        </button>
-                    </div>
+                    {/* Product & Cost assistant is fully button-driven, matching the
+                        design — a disclaimer footer replaces the text input while it's
+                        active, since there's nothing to type. */}
+                    {assistantSubtitle ? (
+                        <div className="border-t border-gray-200 bg-white px-4 py-2.5 text-[11px] text-gray-500 text-center leading-snug">
+                            Comfort and fit guidance only. Not medical advice.
+                            <br />
+                            For health concerns speak with your GP or the National Continence Helpline 1800 33 00 66.
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-2 border-t border-gray-200 bg-white px-3 py-2">
+                            <input
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                                placeholder="How can I help you?"
+                                className="flex-1 text-sm outline-none px-2 py-2 bg-transparent text-gray-700 placeholder:text-gray-400"
+                            />
+                            <button
+                                onClick={handleSend}
+                                aria-label="Send"
+                                className="flex items-center justify-center w-9 h-9 rounded-full bg-secondary text-white hover:bg-secondary transition-colors shrink-0"
+                            >
+                                <RiSendPlaneFill size={14} />
+                            </button>
+                        </div>
+                    )}
                 </>
             )}
         </div>
