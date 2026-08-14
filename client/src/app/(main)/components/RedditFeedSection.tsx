@@ -60,8 +60,8 @@ const RedditFeedSection = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 {posts.map((post) => (
-                    <a
-                        key={post.id}
+                    <div key={post.id}>
+                    {post.url ? <a
                         href={post.url}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -85,7 +85,34 @@ const RedditFeedSection = () => {
                                 {post.author} · {timeAgo(post.postedAt)} ago · {post.comments} comments
                             </span>
                         </span>
-                    </a>
+                    </a> :
+                    <div
+
+                        className="bg-background border cursor-pointer border-primary-hover rounded-2xl p-5 flex gap-4 items-start hover:shadow-md transition-shadow"
+                    >
+                        <span className="flex flex-col items-center gap-0.5 bg-secondary-light rounded-lg px-2.5 py-2 min-w-13 shrink-0">
+                            <span className="text-secondary text-sm">▲</span>
+                            <span className="text-secondary font-bold text-base">{post.upvotes}</span>
+                        </span>
+                        <span className="flex-1 min-w-0">
+                            <span className="flex items-center gap-2 flex-wrap mb-1">
+                                <span className="font-bold text-sm text-secondary">{post.subreddit}</span>
+                                <span className="bg-[#ece2d2] text-text text-xs font-semibold rounded-full px-2.5 py-0.5">
+                                    {post.flair}
+                                </span>
+                            </span>
+                            <span className="block text-lg font-semibold leading-snug text-text-hover">
+                                {post.title}
+                            </span>
+                            <span className="block text-sm text-text mt-1.5">
+                                {post.author} · {timeAgo(post.postedAt)} ago · {post.comments} comments
+                            </span>
+                        </span>
+                    </div>
+                    }
+                    </div>
+
+
                 ))}
             </div>
         </section>

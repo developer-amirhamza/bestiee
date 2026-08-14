@@ -108,19 +108,19 @@ const Footer = () => {
                     {/* Social icons */}
                     <div className="flex items-center text-background gap-3 mt-1">
                         <Link
-                            href="https://www.facebook.com/healthuau/"
+                            href="https://www.facebook.com/aubestiee/"
                             className="w-9 h-9 rounded-full bg-secondary hover:bg-secondary-hover flex items-center justify-center transition-colors"
                         >
                             <FaFacebookF size={14} />
                         </Link>
                         <Link
-                            href="https://www.instagram.com/healthu_au/"
+                            href="https://www.instagram.com/bestieeau/"
                             className="w-9 h-9 rounded-full bg-secondary hover:bg-secondary-hover flex items-center justify-center transition-colors"
                         >
                             <FaInstagram size={14} />
                         </Link>
                         <Link
-                            href="https://www.linkedin.com/company/health-u-australia/"
+                            href="https://www.linkedin.com/company/bestiee"
                             className="w-9 h-9 rounded-full bg-secondary hover:bg-secondary-hover flex items-center justify-center transition-colors"
                         >
                             <FaLinkedinIn size={14} />

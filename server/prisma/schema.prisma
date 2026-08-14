@@ -463,7 +463,7 @@ model RedditPost {
   flair       String
   upvotes     Int      @default(0)
   comments    Int      @default(0)
-  url         String
+  url         String?
   postedAt    DateTime @default(now())
   isPublished Boolean  @default(true)
   createdAt   DateTime @default(now())

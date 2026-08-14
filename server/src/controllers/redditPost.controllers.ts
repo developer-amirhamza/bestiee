@@ -32,7 +32,7 @@ export const getAllRedditPostsAdmin = async (req: Request, res: Response) => {
 export const createRedditPost = async (req: Request, res: Response) => {
     try {
         const { subreddit, title, author, flair, upvotes, comments, url, postedAt, isPublished } = req.body;
-        if (!subreddit || !title || !author || !flair || !url) {
+        if (!subreddit || !title || !author || !flair) {
             return errorHandler(res, 400, "Please provide the required fields", true);
         }
         const post = await prisma.redditPost.create({

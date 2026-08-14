@@ -62,7 +62,7 @@ const RedditPostForm: React.FC<RedditPostFormProps> = ({ initialData, isEdit = f
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.subreddit || !form.title || !form.author || !form.flair || !form.url) {
+    if (!form.subreddit || !form.title || !form.author || !form.flair) {
       toast.error('Subreddit, title, author, flair and link are required');
       return;
     }
@@ -143,7 +143,7 @@ const RedditPostForm: React.FC<RedditPostFormProps> = ({ initialData, isEdit = f
         </div>
 
         <div>
-          <label className="block font-medium mb-1">Link to the real Reddit thread *</label>
+          <label className="block font-medium mb-1">Link to the real Reddit thread (optional)</label>
           <input
             type="url"
             name="url"
@@ -151,7 +151,6 @@ const RedditPostForm: React.FC<RedditPostFormProps> = ({ initialData, isEdit = f
             onChange={handleChange}
             placeholder="https://www.reddit.com/r/..."
             className="w-full border rounded px-3 py-2"
-            required
           />
         </div>
 

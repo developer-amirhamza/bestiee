@@ -75,8 +75,9 @@ const PLATFORM_ICON: Record<Platform, React.ReactNode> = {
 // Only accounts already published elsewhere on the real site (footer) get a
 // real follow link — no destination is invented for platforms without one.
 const PLATFORM_URL: Partial<Record<Platform, string>> = {
-    Facebook: 'https://www.facebook.com/healthuau/',
-    Instagram: 'https://www.instagram.com/healthu_au/',
+    Facebook: 'https://www.facebook.com/aubestiee/',
+    Instagram: 'https://www.instagram.com/bestieeau/',
+    TikTok: 'https://www.tiktok.com/@actualbestiee0',
 }
 
 const TABS: Array<'All' | Platform> = ['All', 'Instagram', 'Facebook', 'TikTok']
@@ -193,10 +194,10 @@ const CommunitySection = () => {
                 <>
                     <div
                         onClick={() => setActivePost(null)}
-                        className="fixed inset-0 bg-black/50 z-[92]"
+                        className="fixed inset-0 bg-black/50 z-92"
                     />
-                    <div className="fixed top-[6vh] left-1/2 -translate-x-1/2 w-[860px] max-w-[94vw] max-h-[88vh] bg-background rounded-[22px] z-[93] shadow-2xl overflow-hidden flex flex-col md:flex-row">
-                        <div className="relative w-full md:w-[46%] h-[280px] md:h-auto shrink-0" style={{ backgroundColor: activePost.swatch }}>
+                    <div className="fixed top-[6vh] left-1/2 -translate-x-1/2 w-215 max-w-[94vw] max-h-[88vh] bg-background rounded-[22px] z-93 shadow-2xl overflow-hidden flex flex-col md:flex-row">
+                        <div className="relative w-full md:w-[46%] h-70 md:h-auto shrink-0" style={{ backgroundColor: activePost.swatch }}>
                             <PostMedia post={activePost} controls />
                         </div>
                         <div className="flex-1 flex flex-col min-w-0">
