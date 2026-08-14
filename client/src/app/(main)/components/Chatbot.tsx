@@ -94,7 +94,7 @@ const Chatbot = () => {
         if (open && allProductsRef.current.length === 0) {
             Axios({ ...SummeryApi.fetchProducts })
                 .then((res) => setAllProducts(res.data?.data ?? res.data ?? []))
-                .catch(() => {});
+                .catch(() => { });
         }
     }, [open]);
 
@@ -123,17 +123,17 @@ const Chatbot = () => {
                 {
                     id: idSeq++,
                     sender: "bot",
-                    text: "Hi! It's Bestiee, your virtual assistant at Health U Shop.",
+                    text: "Hi, I am Bestiee. I can find the right product for you, or work out what it will cost. Which would you like?",
                 },
+                // {
+                //     id: idSeq++,
+                //     sender: "bot",
+                //     text: "I can help you find products, check stock, or point you to your orders.",
+                // },
                 {
                     id: idSeq++,
                     sender: "bot",
-                    text: "I can help you find products, check stock, or point you to your orders.",
-                },
-                {
-                    id: idSeq++,
-                    sender: "bot",
-                    text: "How can I help you?",
+                    // text: "How can I help you?",
                     quickReplies: QUICK_REPLIES,
                 },
             ]);
@@ -393,11 +393,10 @@ const Chatbot = () => {
                                 <div className="max-w-[85%] flex flex-col gap-2">
                                     {m.text && (
                                         <div
-                                            className={`rounded-2xl px-3.5 py-2 text-sm leading-snug whitespace-pre-line ${
-                                                m.sender === "bot"
+                                            className={`rounded-2xl px-3.5 py-2 text-sm leading-snug whitespace-pre-line ${m.sender === "bot"
                                                     ? "bg-primary-hover text-text rounded-bl-sm"
                                                     : "bg-white border border-gray-200 text-gray-800 rounded-br-sm"
-                                            }`}
+                                                }`}
                                         >
                                             {m.text}
                                         </div>

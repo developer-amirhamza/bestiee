@@ -6,8 +6,7 @@ import { prisma } from "../lib/prisma";
 
 export const createProduct = async (req: Request, res: Response) => {
     try {
-        const { title, price, description, colors, sizes, discount, more_details, category, stock, images,categoryId, subcategoryId,
-                pricingNotes, pack, absorbency, keyFeatures } = req.body;
+        const { title, price, description, colors, sizes, discount, more_details, category, stock, images,categoryId, subcategoryId } = req.body;
         if (!title || !price || !discount) {
             return errorHandler(res, 400, "Please provide the required fields", true)
         }
@@ -23,8 +22,7 @@ export const createProduct = async (req: Request, res: Response) => {
         }
 
         const newProduct = await prisma.product.create({
-            data: { title, price: priceNum, description, colors, sizes, discount: discountNum, more_details, category, stock, images,categoryId, subcategoryId,
-                  pricingNotes, pack, absorbency, keyFeatures }
+            data: { title, price: priceNum, description, colors, sizes, discount: discountNum, more_details, category, stock, images,categoryId, subcategoryId }
         });
         return errorHandler(res, 200, "Tha product has been created successfully!", false, newProduct)
     } catch (error: any) {
@@ -36,8 +34,7 @@ export const createProduct = async (req: Request, res: Response) => {
 export const updateProduct = async (req: Request, res: Response) => {
   try {
     const { id, title, price, description, colors, sizes, discount,
-            more_details, categoryId, subcategoryId, stock, images, isActive,
-            pricingNotes, pack, absorbency, keyFeatures } = req.body;
+            more_details, categoryId, subcategoryId, stock, images, isActive } = req.body;
 
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) return errorHandler(res, 404, "Product not found");
@@ -72,10 +69,6 @@ export const updateProduct = async (req: Request, res: Response) => {
         stock,
         images,
         isActive,
-        pricingNotes,
-        pack,
-        absorbency,
-        keyFeatures,
       },
     });
     return errorHandler(res, 200, "Product updated successfully", false, updated);
@@ -215,10 +208,10 @@ export const searchProducts = async (req: Request, res: Response) => {
       ];
     }
 
-    // // ✅ FIX: category is a relation – use slug filter
-    // if (category && typeof category === "string") {
-    //   where.category = { categoryId: category };   // not "category: category"
-    // }
+    // Category filter — `category` is the Category id.
+    if (category && typeof category === "string") {
+      where.categoryId = category;
+    }
 
     // Price range
     if (minPrice !== undefined || maxPrice !== undefined) {
