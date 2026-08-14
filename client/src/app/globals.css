@@ -54,7 +54,7 @@ body {
   background: #F7F4EF;
   color: var(--foreground);
   font-family: "DM Sans", "DM Sans Fallback", sans-serif;
-  overflow: hidden;
+  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
