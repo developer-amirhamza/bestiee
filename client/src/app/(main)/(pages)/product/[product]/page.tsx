@@ -157,7 +157,7 @@ const ProductDetailsPage = () => {
                 <div className="grid lg:grid-cols-2 gap-10 mt-6">
                     {/* Left column — gallery */}
                     <div>
-                        <div className="relative h-[330px] md:h-[420px] bg-white rounded-2xl border border-primary-hover flex items-center justify-center overflow-hidden">
+                        <div className="relative h-82.5 md:h-105 bg-white rounded-2xl border border-primary-hover flex items-center justify-center overflow-hidden">
                             {data.images?.[image] ? (
                                 <img className="max-w-[86%] max-h-[88%] object-contain" src={data.images[image]} alt={data.title} />
                             ) : (
@@ -225,7 +225,7 @@ const ProductDetailsPage = () => {
                                 </div>
 
                                 <div className="flex items-baseline gap-3 mt-4">
-                                    <span className="font-secondary text-4xl text-text-hover">{DisplayPriceInAud(finalPrice)}</span>
+                                    <span className="font-primary text-4xl text-text-hover">{DisplayPriceInAud(finalPrice)}</span>
                                     {data.discount > 0 && (
                                         <span className="line-through text-text text-xl">{DisplayPriceInAud(data.price)}</span>
                                     )}
@@ -264,11 +264,11 @@ const ProductDetailsPage = () => {
                                     )}
                                 </div>
 
-                                <div className="flex flex-col gap-2 mt-6 text-sm text-text">
+                                {/* <div className="flex flex-col gap-2 mt-6 text-sm text-text">
                                     <div>📦 Ships in plain, unmarked packaging</div>
                                     <div>🚚 Free delivery on orders over $99</div>
                                     <div>✚ Claimable on NDIS and Support at Home</div>
-                                </div>
+                                </div> */}
                             </>
                         ) : (
                             <div className="mt-5">
@@ -296,7 +296,7 @@ const ProductDetailsPage = () => {
                 </div>
 
                 {tab === 'details' && (data.keyFeatures?.length > 0 || specs.length > 0) && (
-                    <div className="grid md:grid-cols-2 gap-10 mt-14">
+                    <div className="grid md:grid-cols-2 gap-1">
                         {data.keyFeatures?.length > 0 && (
                             <div>
                                 <h2 className="font-secondary text-2xl text-text-hover mb-3">What makes it work</h2>
