@@ -17,7 +17,9 @@ interface TrainingSession {
     spotsLeft: number | null
 }
 
-const VISIBLE = 3
+
+
+
 
 const when = (session: TrainingSession) => {
     if (session.sessionType === 'ON_DEMAND') return 'Watch any time'
@@ -131,6 +133,10 @@ const TrainingSessionsSection = () => {
     const [index, setIndex] = useState(0)
     const [activeSession, setActiveSession] = useState<TrainingSession | null>(null)
 
+    const [VISIBLE, setVisible] = useState(3);
+
+
+
     const fetchSessions = () => {
         Axios({ ...SummeryApi.getTrainingSessions })
             .then((res) => {
@@ -142,6 +148,22 @@ const TrainingSessionsSection = () => {
     useEffect(() => {
         fetchSessions()
     }, [])
+    useEffect(() => {
+        const update = () => {
+            const w = window.innerWidth
+            if (w < 768) setVisible(1)
+            else if (w < 1024) setVisible(2)
+            else setVisible(3)
+        }
+        update()
+        window.addEventListener('resize', update)
+        return () => window.removeEventListener('resize', update)
+    }, [])
+
+    useEffect(() => {
+        const maxIdx = Math.max(0, sessions.length - VISIBLE)
+        setIndex((i) => Math.min(i, maxIdx))
+    }, [VISIBLE, sessions.length])
 
     if (sessions.length === 0) return null
 

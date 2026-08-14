@@ -64,7 +64,7 @@ const YouAreNotAlone = () => {
                     >
                         {slides.map((slide) => (
                             <div key={slide.title} className="w-full shrink-0 px-0.5">
-                                <div className="bg-white/10 rounded-2xl p-6 md:p-8 grid md:grid-cols-[1fr_210px] gap-6 items-center min-h-[210px]">
+                                <div className="bg-white/10 rounded-2xl p-6 md:p-8 grid md:grid-cols-[1fr_210px] gap-6 items-center min-h-52.5">
                                     <div>
                                         <span className="bg-white/15 rounded-full px-3.5 py-1.5 text-sm font-semibold">
                                             {slide.tag}
