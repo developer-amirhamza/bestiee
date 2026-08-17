@@ -392,6 +392,22 @@ model Blog {
   @@index([authorId])
 }
 
+// A single FAQ entry. `blogId` is null for the standalone "Long FAQ" page,
+// or set to a Blog's id to show as that article's embedded FAQ section —
+// both surfaces render the same rows as FAQPage structured data.
+model Faq {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String
+  blogId    String?
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([blogId])
+}
+
 model TeamTask {
   id             String    @id @default(dbgenerated("gen_random_uuid()"))
   type           String    @default("TASK")

@@ -27,6 +27,7 @@ import waitlistRouter from "./routes/waitlist.routes"
 import uploadImageRouter from "./routes/uploadImage.route"
 import trainingSessionRouter from "./routes/trainingSession.routes"
 import redditPostRouter from "./routes/redditPost.routes"
+import faqRouter from "./routes/faq.routes"
 
 config();
 const app = express();
@@ -68,6 +69,7 @@ app.use("/api/waitlist", waitlistRouter);
 app.use("/api/image", uploadImageRouter);
 app.use("/api/training-sessions", trainingSessionRouter);
 app.use("/api/reddit-posts", redditPostRouter);
+app.use("/api/faqs", faqRouter);
 
 
 

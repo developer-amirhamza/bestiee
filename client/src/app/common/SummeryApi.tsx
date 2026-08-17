@@ -167,6 +167,13 @@ export const SummeryApi = {
     updateRedditPost: { url: "/api/reddit-posts/update", method: "put" },
     deleteRedditPost: { url: "/api/reddit-posts/delete", method: "delete" },
 
+    // ── FAQs (standalone "Long FAQ" page + per-article embedded FAQ sections) ──
+    getFaqs: { url: "/api/faqs", method: "get" },
+    getAllFaqsAdmin: { url: "/api/faqs/all", method: "get" },
+    createFaq: { url: "/api/faqs/create", method: "post" },
+    updateFaq: { url: "/api/faqs/update", method: "put" },
+    deleteFaq: { url: "/api/faqs/delete", method: "delete" },
+
     // Payment (Stripe)
     createCheckoutSession: {
         url: "/api/payment/create-checkout-session",

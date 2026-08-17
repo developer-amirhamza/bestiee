@@ -9,7 +9,7 @@ import { FaCartFlatbedSuitcase, FaUsersGear } from "react-icons/fa6";
 import { RiArticleFill, RiPriceTag2Fill } from "react-icons/ri"
 import { AiFillDashboard, AiFillProduct } from "react-icons/ai";
 import { GrArticle } from "react-icons/gr";
-import { MdCategory, MdReviews, MdTaskAlt, MdOutlinePendingActions, MdSchool, MdForum } from "react-icons/md"
+import { MdCategory, MdReviews, MdTaskAlt, MdOutlinePendingActions, MdSchool, MdForum, MdHelp } from "react-icons/md"
 
 
 
@@ -117,6 +117,11 @@ export const adminNavItems = [
         label: "Reddit Feed",
         icon: MdForum,
         path: "/admin/reddit-posts",
+    },
+    {
+        label: "FAQs",
+        icon: MdHelp,
+        path: "/admin/faqs",
     },
 ]
 
