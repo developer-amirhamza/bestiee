@@ -10,7 +10,7 @@ const page = () => {
   return (
     <div className="grid w-full place-content-center">
         <div className="flex w-full mt-6">
-                        <Image src={image} alt="health u australia" className='max-h-72 rounded-xl object-cover' />
+                        {/* <Image src={image} alt="health u australia" className='max-h-72 rounded-xl object-cover' /> */}
                     </div>
         <ProductFinderWizard/>
     </div>

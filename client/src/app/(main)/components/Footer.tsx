@@ -43,7 +43,7 @@ const Footer = () => {
                      <Image src={logo} alt='Health U Australia' className='  max-w-30 px-2 rounded-md  bg-white   w-full justify-self-start items-center-safe   ' />
 
                     <p className="text-white text-sm leading-relaxed">
-                        Aidble Care Pty Ltd is a registered NDIS provider supplying continence and personal care products to Australian families, carers and aged-care facilities.
+                       Bestiee is a registered NDIS provider supplying continence and personal care products to Australian families, carers and aged-care facilities.
                     </p>
                 </div>
 
@@ -94,11 +94,11 @@ const Footer = () => {
                   <div className="flex flex-col gap-3 text-sm text-white">
                         <a href="tel:1300243253" className="flex items-center gap-2 hover:text-white-hover transition-colors">
                             <IoCall className="text-white shrink-0" size={16} />
-                            1300 243 253
+                            0481 707 758
                         </a>
-                        <a href="mailto:care@aidble.com.au" className="flex items-center gap-2 hover:text-white-hover transition-colors">
+                        <a href="mailto:hello@mybestiee.com.au" className="flex items-center gap-2 hover:text-white-hover transition-colors">
                             <IoMail className="text-white shrink-0" size={16} />
-                            care@aidble.com.au
+                            hello@mybestiee.com.au
                         </a>
                         <div className="flex items-center gap-2">
                             <IoLocationSharp className="text-white shrink-0" size={16} />
@@ -132,7 +132,7 @@ const Footer = () => {
             {/* Bottom bar */}
             <div className="border-t border-primary mt-5 ">
                 <div className="container mx-auto  px-6  flex flex-col  sm:flex-row items-center justify-between gap-2 text-xs text-white-hover">
-                    <p className='py-5'>© {new Date().getFullYear()} Aidble Care Pty Ltd · ABN 00 000 000 000</p>
+                    <p className='py-5'>© {new Date().getFullYear()} Bestiee · ABN 00 000 000 000</p>
                     <div className="flex items-center gap-4">
                         <span className="flex items-center gap-1">
                             <MdVerified className="text-[#1a56db]" size={13} />
