@@ -131,6 +131,67 @@ export const submitEnquiry = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// Submit a B2B "book a meeting" request — we call them, no calendar/video
+// integration. Always routes to a human, same as the other enquiry types.
+export const submitMeetingRequest = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.userId;
+    const { firstName, lastName, email, phone, company, preferredAt, message } = req.body;
+    const fullName = [firstName, lastName].filter(Boolean).join(" ");
+    if (!fullName.trim()) return errorHandler(res, 400, "First name and surname are required", true);
+    if (!email) return errorHandler(res, 400, "Email address is required", true);
+    if (!phone) return errorHandler(res, 400, "A phone number is required so we can call you", true);
+    if (!message) return errorHandler(res, 400, "Please tell us what you'd like to cover", true);
+
+    const enquiry = await prisma.enquiry.create({
+      data: {
+        type: "MEETING",
+        status: "NEW",
+        userId: userId ?? null,
+        name: fullName,
+        email,
+        phone,
+        company: company ?? null,
+        message,
+        preferredAt: preferredAt ? new Date(preferredAt) : null,
+      },
+    });
+
+    const whenLabel = enquiry.preferredAt
+      ? new Date(enquiry.preferredAt).toLocaleString("en-AU", { dateStyle: "full", timeStyle: "short", timeZone: "Australia/Sydney" })
+      : "No preferred time given";
+
+    sendEmail({
+      sendTo: TEAM_EMAIL,
+      subject: `Meeting request — ${fullName}${company ? ` (${company})` : ""}`,
+      html: `<p>A B2B customer has asked us to call them.</p>
+             <ul>
+               <li><b>From:</b> ${fullName} (${email}, ${phone})</li>
+               ${company ? `<li><b>Company:</b> ${company}</li>` : ""}
+               <li><b>Preferred time:</b> ${whenLabel}</li>
+               <li><b>What they want to cover:</b> ${message}</li>
+             </ul>`,
+    }).catch(() => { });
+
+    sendEmail({
+      sendTo: email,
+      subject: "We've got your meeting request",
+      html: `<h2>Thanks, ${firstName || fullName}</h2>
+             <p>We've received your request${enquiry.preferredAt ? ` for <b>${whenLabel}</b>` : ""} and our team will call you on <b>${phone}</b> to confirm.</p>
+             <p style="color:#888;font-size:13px">No cost, no obligation — just a conversation.</p>`,
+    }).catch((e) => console.error("Meeting request confirmation email failed:", e.message));
+
+    return res.status(200).json({
+      success: true,
+      error: false,
+      message: "Thanks — we'll call you to confirm a time.",
+      data: enquiry,
+    });
+  } catch (error: any) {
+    return errorHandler(res, 500, error.message || "Internal server error!", true);
+  }
+};
+
 // Admin: list enquiries, optionally filtered by type/status.
 export const listEnquiries = async (req: Request, res: Response) => {
   try {

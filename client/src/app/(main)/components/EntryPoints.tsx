@@ -1,5 +1,7 @@
 "use client";
 import Link from "next/link";
+import { useState } from "react";
+import BookMeetingModal from "@/app/(main)/components/BookMeetingModal";
 
 // The three public entry points from the brief's diagram:
 // Shop (consumer) · Apply for a trade account (B2B) · NDIS — get a quote.
@@ -29,6 +31,7 @@ const ENTRIES = [
     ],
     href: "/apply/trade",
     cta: "Open a trade account",
+    secondaryCta: "Book a meeting",
     highlight: true,
   },
   {
@@ -47,6 +50,8 @@ const ENTRIES = [
 ];
 
 export default function EntryPoints() {
+  const [showMeetingModal, setShowMeetingModal] = useState(false);
+
   return (
     <section className="bg-background py-20">
       <div className="container mx-auto px-6">
@@ -105,10 +110,25 @@ export default function EntryPoints() {
               >
                 {e.cta} →
               </Link>
+              {e.secondaryCta && (
+                <button
+                  type="button"
+                  onClick={() => setShowMeetingModal(true)}
+                  className={`mt-2.5 text-center rounded-full py-3 font-semibold transition-colors border ${
+                    e.highlight
+                      ? "border-white/40 text-background hover:bg-white/10"
+                      : "border-primary-hover text-text-hover hover:bg-primary"
+                  }`}
+                >
+                  {e.secondaryCta}
+                </button>
+              )}
             </div>
           ))}
         </div>
       </div>
+
+      {showMeetingModal && <BookMeetingModal onClose={() => setShowMeetingModal(false)} />}
     </section>
   );
 }

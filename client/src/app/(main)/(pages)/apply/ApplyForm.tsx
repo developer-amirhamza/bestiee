@@ -6,6 +6,7 @@ import Axios from "@/utils/Axios";
 import AxiosToastError from "@/utils/AxiosToastError";
 import { SummeryApi } from "@/app/common/SummeryApi";
 import { ROLES } from "@/utils/roles";
+import BookMeetingModal from "@/app/(main)/components/BookMeetingModal";
 
 // Shared application form for the two upgrade paths (Trade / NDIS).
 export default function ApplyForm({
@@ -16,6 +17,7 @@ export default function ApplyForm({
   const router = useRouter();
   const isTrade = requestedRole === ROLES.TRADE;
   const [loading, setLoading] = useState(false);
+  const [showMeetingModal, setShowMeetingModal] = useState(false);
   const [form, setForm] = useState({
     businessName: "",
     abn: "",
@@ -106,7 +108,25 @@ export default function ApplyForm({
             You'll need to be signed in. We'll email you once your account is approved.
           </p>
         </form>
+
+        {isTrade && (
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-500">
+              Prefer to talk it through first?{" "}
+              <button
+                type="button"
+                onClick={() => setShowMeetingModal(true)}
+                className="font-semibold text-[#1a1a18] underline underline-offset-2"
+              >
+                Book a meeting
+              </button>{" "}
+              and we'll call you — no account needed.
+            </p>
+          </div>
+        )}
       </div>
+
+      {showMeetingModal && <BookMeetingModal onClose={() => setShowMeetingModal(false)} />}
     </section>
   );
 }

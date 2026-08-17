@@ -350,6 +350,7 @@ deleteSubcategory: {
     // ── Enquiries ──
     submitFundingEnquiry: { url: "/api/enquiries/funding", method: "post" },
     submitEnquiry: { url: "/api/enquiries", method: "post" },
+    submitMeetingRequest: { url: "/api/enquiries/meeting", method: "post" },
     listEnquiries: { url: "/api/enquiries", method: "get" },
     updateEnquiryStatus: { url: "/api/enquiries/status", method: "put" },
 

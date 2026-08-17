@@ -184,10 +184,14 @@ model Enquiry {
   name             String?
   email            String?
   phone            String?
+  company          String?
   participantNeed  String?
   availableFunding String?
   message          String?
   quoteId          String?
+  // Requested call/meeting time for type = "MEETING" (B2B "book a meeting,
+  // we'll call you" requests). Unused by other enquiry types.
+  preferredAt      DateTime?
   handledBy        String?
   handledAt        DateTime?
   createdAt        DateTime  @default(now())
