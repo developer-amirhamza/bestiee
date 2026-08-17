@@ -112,7 +112,7 @@ const TestimonialsSection = () => {
                 </div>
 
                 <div
-                    className="relative grid grid-cols-1 md:grid-cols-3 gap-5 h-140"
+                    className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 h-140"
                     style={{
                         maskImage:
                             "linear-gradient(to bottom, transparent, black 12%, black 88%, transparent)",
@@ -124,7 +124,7 @@ const TestimonialsSection = () => {
                     <div className="hidden md:block h-full">
                         <ScrollColumn items={fill(columns[1])} direction="up" duration={38} />
                     </div>
-                    <div className="hidden md:block h-full">
+                    <div className="hidden lg:block h-full">
                         <ScrollColumn items={fill(columns[2])} direction="down" duration={35} />
                     </div>
                 </div>

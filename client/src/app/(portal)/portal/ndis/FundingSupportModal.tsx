@@ -44,14 +44,14 @@ export default function FundingSupportModal({
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          className="fixed inset-0 z-50 flex items-stretch justify-stretch md:items-center md:justify-center bg-black/40 p-0 md:p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
         >
           <motion.div
-            className="bg-white rounded-2xl w-full max-w-md p-7"
+            className="bg-white w-full h-full md:h-auto md:rounded-2xl md:max-w-md p-6 md:p-7 overflow-y-auto"
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}

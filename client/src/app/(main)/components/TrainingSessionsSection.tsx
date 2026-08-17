@@ -74,7 +74,7 @@ const RegisterModal = ({
     return (
         <>
             <div onClick={onClose} className="fixed inset-0 bg-black/50 z-92" />
-            <div className="fixed top-[10vh] left-1/2 -translate-x-1/2 w-120 max-w-[92vw] bg-background rounded-2xl shadow-2xl z-93 overflow-hidden">
+            <div className="fixed inset-0 md:inset-auto md:top-[10vh] md:left-1/2 md:-translate-x-1/2 w-full h-full md:w-120 md:h-auto md:max-w-[92vw] bg-background rounded-none md:rounded-2xl shadow-2xl z-93 overflow-y-auto md:overflow-hidden">
                 <div className="flex items-center justify-between px-6 py-5 border-b border-primary-hover">
                     <h3 className="font-secondary text-xl text-text-hover">Reserve your spot</h3>
                     <button onClick={onClose} aria-label="Close" className="text-2xl leading-none text-text hover:text-text-hover">×</button>
@@ -167,6 +167,9 @@ const TrainingSessionsSection = () => {
 
     if (sessions.length === 0) return null
 
+    // On mobile a single card sits at 84% width so the next one peeks at
+    // the edge; tablet/desktop split the row evenly across VISIBLE cards.
+    const cardBasis = VISIBLE === 1 ? 84 : 100 / VISIBLE
     const maxIndex = Math.max(0, sessions.length - VISIBLE)
     const goPrev = () => setIndex((i) => Math.max(0, i - 1))
     const goNext = () => setIndex((i) => Math.min(maxIndex, i + 1))
@@ -215,13 +218,13 @@ const TrainingSessionsSection = () => {
                 <div className="overflow-hidden">
                     <div
                         className="flex transition-transform duration-400 ease-out"
-                        style={{ transform: `translateX(-${index * (100 / VISIBLE)}%)` }}
+                        style={{ transform: `translateX(-${index * cardBasis}%)` }}
                     >
                         {sessions.map((session) => (
                             <div
                                 key={session.id}
                                 className="box-border pr-3"
-                                style={{ flex: `0 0 ${100 / VISIBLE}%`, maxWidth: `${100 / VISIBLE}%` }}
+                                style={{ flex: `0 0 ${cardBasis}%`, maxWidth: `${cardBasis}%` }}
                             >
                                 <div className="bg-white rounded-2xl p-6.5 h-full flex flex-col">
                                     <span className="self-start bg-[#d8e8dc] text-secondary font-semibold rounded-full px-3.5 py-1.5 text-sm">

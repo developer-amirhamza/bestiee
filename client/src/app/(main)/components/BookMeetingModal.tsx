@@ -53,7 +53,7 @@ export default function BookMeetingModal({ onClose }: { onClose: () => void }) {
     return (
         <>
             <div onClick={onClose} className="fixed inset-0 bg-black/50 z-92" />
-            <div className="fixed top-[6vh] left-1/2 -translate-x-1/2 w-120 max-w-[92vw] max-h-[88vh] overflow-y-auto bg-background rounded-2xl shadow-2xl z-93">
+            <div className="fixed inset-0 md:inset-auto md:top-[6vh] md:left-1/2 md:-translate-x-1/2 w-full h-full md:w-120 md:h-auto md:max-w-[92vw] md:max-h-[88vh] overflow-y-auto bg-background rounded-none md:rounded-2xl shadow-2xl z-93">
                 <div className="flex items-center justify-between px-6 py-5 border-b border-primary-hover sticky top-0 bg-background">
                     <div>
                         <h3 className="font-secondary text-xl text-text-hover">Book a meeting</h3>

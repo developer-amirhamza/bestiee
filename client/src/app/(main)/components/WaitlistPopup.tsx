@@ -140,12 +140,12 @@ export default function WaitlistPopup() {
 
     return (
         <div
-            className="fixed inset-0 z-80 flex items-center justify-center p-4 "
+            className="fixed inset-0 z-80 flex items-center justify-center p-0 md:p-4 "
             style={{ backgroundColor: "rgba(58,46,40,0.55)" }}
             onClick={close}
         >
             <div
-                className="relative w-full max-w-md rounded-2xl min-h-full overflow-y-scroll no-scrollbar flex flex-col h-full shadow-2xl my-4"
+                className="relative w-full md:max-w-md rounded-none md:rounded-2xl min-h-full overflow-y-scroll no-scrollbar flex flex-col h-full shadow-2xl my-0 md:my-4"
                 style={{ backgroundColor: CREAM }}
                 onClick={(e) => e.stopPropagation()}
             >

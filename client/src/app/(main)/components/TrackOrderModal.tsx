@@ -76,7 +76,7 @@ const TrackOrderModal: React.FC<Props> = ({ onClose }) => {
     return (
         <>
             <div onClick={onClose} className="fixed inset-0 bg-black/45 z-[90]" />
-            <div className="fixed top-[12vh] left-1/2 -translate-x-1/2 w-[520px] max-w-[94vw] bg-background rounded-2xl shadow-2xl z-[91] overflow-hidden">
+            <div className="fixed inset-0 md:inset-auto md:top-[12vh] md:left-1/2 md:-translate-x-1/2 w-full h-full md:w-[520px] md:h-auto md:max-w-[94vw] bg-background rounded-none md:rounded-2xl shadow-2xl z-[91] overflow-y-auto">
                 <div className="px-6 py-5 border-b border-primary-hover flex items-start gap-4">
                     <div className="flex-1">
                         <div className="text-sm text-text tracking-wide">TRACK ORDER</div>

@@ -54,7 +54,7 @@ const CareGuidesSection = () => {
                     </Link>
                 </div>
 
-                <div className="grid md:grid-cols-[1.25fr_1fr] gap-6 items-stretch">
+                <div className="grid lg:grid-cols-[1.25fr_1fr] gap-6 items-stretch">
                     <Link
                         href={`/blog/${featured.slug}`}
                         className="bg-white border border-primary-hover rounded-2xl overflow-hidden flex flex-col hover:shadow-lg transition-shadow"

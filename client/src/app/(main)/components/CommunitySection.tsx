@@ -168,7 +168,7 @@ const CommunitySection = () => {
                     <span className="text-sm text-text ml-1.5">{visible.length} posts</span>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-5">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
                     {visible.map((post) => (
                         <button
                             key={post.id}

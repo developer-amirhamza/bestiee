@@ -34,14 +34,14 @@ const Hero = () => {
             <div className="absolute inset-0 bg-secondary/80" />
             <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_12%_40%,rgba(0,0,0,.42),transparent_60%)]" />
 
-            <div className="relative z-10 container mx-auto px-6 py-20 lg:py-24 flex flex-wrap gap-12 items-center">
+            <div className="relative z-10 container mx-auto px-6 py-14 lg:py-24 flex flex-col lg:flex-row gap-10 lg:gap-12 lg:items-center">
                 {/* Text content */}
-                <div className="flex-1 min-w-[300px] max-w-2xl flex flex-col gap-6">
+                <div className="w-full lg:flex-1 lg:max-w-2xl flex flex-col gap-6">
                     <span className="self-start bg-white/16 text-background text-sm font-semibold rounded-full px-4.5 py-2">
                         Dignified continence care
                     </span>
 
-                    <h1 className="font-secondary leading-[0.95] tracking-tight text-5xl sm:text-6xl lg:text-7xl">
+                    <h1 className="font-secondary leading-[0.95] tracking-tight text-4xl md:text-5xl lg:text-7xl">
                         Care gently.<br />
                         Live freely.
                     </h1>
@@ -77,7 +77,7 @@ const Hero = () => {
                 </div>
 
                 {/* Care tips + vlog cards */}
-                <div className="w-full sm:w-auto flex-1 min-w-[300px] max-w-xl grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="w-full lg:flex-1 lg:max-w-xl grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Link
                         href="/blog"
                         className="bg-white text-secondary rounded-2xl p-6 flex flex-col justify-between gap-4 aspect-square hover:-translate-y-1 transition-transform"

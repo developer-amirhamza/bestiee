@@ -147,6 +147,99 @@ const ProductsContent = () => {
     };
 
     const activeSort = SORTS.find((s) => s.value === sort) ?? SORTS[0];
+    const [showFilters, setShowFilters] = useState(false);
+
+    useEffect(() => {
+        document.body.style.overflow = showFilters ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+    }, [showFilters]);
+
+    // Shared between the tablet/desktop sidebar and the mobile filter drawer.
+    const filterPanel = (
+        <>
+            <div>
+                <div className="font-bold text-lg text-text-hover mb-2.5">Category</div>
+                <div className="flex flex-col gap-1.5">
+                    <button
+                        onClick={() => updateFilters({ category: undefined })}
+                        className={`text-left text-base flex justify-between gap-2.5 py-0.5 ${!categoryId ? 'text-secondary font-bold' : 'text-text-hover'}`}
+                    >
+                        All Categories
+                    </button>
+                    {categories.map((cat: any) => {
+                        const on = categoryId === cat.id;
+                        return (
+                            <button
+                                key={cat.id}
+                                onClick={() => updateFilters({ category: cat.id })}
+                                className={`text-left text-base flex justify-between gap-2.5 py-0.5 ${on ? 'text-secondary font-bold' : 'text-text-hover'}`}
+                            >
+                                {cat.title}
+                                <span className="text-text font-normal">{cat.products?.length ?? ''}</span>
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {absorbencyOptions.length > 0 && (
+                <div>
+                    <div className="font-bold text-lg text-text-hover mb-2.5">Absorbency</div>
+                    <div className="flex flex-wrap gap-2">
+                        <button
+                            onClick={() => updateFilters({ absorbency: undefined })}
+                            className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition-colors ${!absorbency ? 'bg-secondary text-background border-secondary' : 'bg-transparent text-text border-primary-hover'}`}
+                        >
+                            All
+                        </button>
+                        {absorbencyOptions.map((a) => {
+                            const on = absorbency === a;
+                            return (
+                                <button
+                                    key={a}
+                                    onClick={() => updateFilters({ absorbency: a })}
+                                    className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition-colors ${on ? 'bg-secondary text-background border-secondary' : 'bg-transparent text-text border-primary-hover'}`}
+                                >
+                                    {a}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
+
+            <div>
+                <div className="font-bold text-lg text-text-hover mb-2.5">Availability</div>
+                <div className="flex flex-wrap gap-2">
+                    {[
+                        { label: 'All', on: !inStockOnly, click: () => updateFilters({ inStock: undefined }) },
+                        { label: 'In stock only', on: inStockOnly, click: () => updateFilters({ inStock: 'true' }) },
+                    ].map((o) => (
+                        <button
+                            key={o.label}
+                            onClick={o.click}
+                            className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition-colors ${o.on ? 'bg-secondary text-background border-secondary' : 'bg-transparent text-text border-primary-hover'}`}
+                        >
+                            {o.label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="rounded-2xl p-5.5 bg-secondary text-background">
+                <div className="font-secondary text-2xl leading-tight">Not sure what to buy?</div>
+                <p className="text-sm text-background/85 leading-relaxed mt-2 mb-3.5">
+                    Answer a few questions and get a product match.
+                </p>
+                <Link
+                    href="/product-finder"
+                    className="block text-center font-semibold rounded-full py-2.5 text-sm bg-white text-secondary hover:bg-primary transition-colors"
+                >
+                    Start the finder →
+                </Link>
+            </div>
+        </>
+    );
 
     return (
         <div className="bg-background min-h-screen">
@@ -170,94 +263,34 @@ const ProductsContent = () => {
                 </div>
             </section>
 
-            <section className="max-w-310 mx-auto px-5 sm:px-7 py-9 pb-16 grid grid-cols-1 lg:grid-cols-[244px_1fr] gap-10 items-start">
-                {/* Sidebar */}
-                <aside className="flex flex-col gap-6.5 lg:sticky lg:top-6">
-                    <div>
-                        <div className="font-bold text-lg text-text-hover mb-2.5">Category</div>
-                        <div className="flex flex-col gap-1.5">
-                            <button
-                                onClick={() => updateFilters({ category: undefined })}
-                                className={`text-left text-base flex justify-between gap-2.5 py-0.5 ${!categoryId ? 'text-secondary font-bold' : 'text-text-hover'}`}
-                            >
-                                All Categories
-                            </button>
-                            {categories.map((cat: any) => {
-                                const on = categoryId === cat.id;
-                                return (
-                                    <button
-                                        key={cat.id}
-                                        onClick={() => updateFilters({ category: cat.id })}
-                                        className={`text-left text-base flex justify-between gap-2.5 py-0.5 ${on ? 'text-secondary font-bold' : 'text-text-hover'}`}
-                                    >
-                                        {cat.title}
-                                        <span className="text-text font-normal">{cat.products?.length ?? ''}</span>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    {absorbencyOptions.length > 0 && (
-                        <div>
-                            <div className="font-bold text-lg text-text-hover mb-2.5">Absorbency</div>
-                            <div className="flex flex-wrap gap-2">
-                                <button
-                                    onClick={() => updateFilters({ absorbency: undefined })}
-                                    className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition-colors ${!absorbency ? 'bg-secondary text-background border-secondary' : 'bg-transparent text-text border-primary-hover'}`}
-                                >
-                                    All
-                                </button>
-                                {absorbencyOptions.map((a) => {
-                                    const on = absorbency === a;
-                                    return (
-                                        <button
-                                            key={a}
-                                            onClick={() => updateFilters({ absorbency: a })}
-                                            className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition-colors ${on ? 'bg-secondary text-background border-secondary' : 'bg-transparent text-text border-primary-hover'}`}
-                                        >
-                                            {a}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    )}
-
-                    <div>
-                        <div className="font-bold text-lg text-text-hover mb-2.5">Availability</div>
-                        <div className="flex flex-wrap gap-2">
-                            {[
-                                { label: 'All', on: !inStockOnly, click: () => updateFilters({ inStock: undefined }) },
-                                { label: 'In stock only', on: inStockOnly, click: () => updateFilters({ inStock: 'true' }) },
-                            ].map((o) => (
-                                <button
-                                    key={o.label}
-                                    onClick={o.click}
-                                    className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition-colors ${o.on ? 'bg-secondary text-background border-secondary' : 'bg-transparent text-text border-primary-hover'}`}
-                                >
-                                    {o.label}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="rounded-2xl p-5.5 bg-secondary text-background">
-                        <div className="font-secondary text-2xl leading-tight">Not sure what to buy?</div>
-                        <p className="text-sm text-background/85 leading-relaxed mt-2 mb-3.5">
-                            Answer a few questions and get a product match.
-                        </p>
-                        <Link
-                            href="/product-finder"
-                            className="block text-center font-semibold rounded-full py-2.5 text-sm bg-white text-secondary hover:bg-primary transition-colors"
-                        >
-                            Start the finder →
-                        </Link>
-                    </div>
+            <section className="max-w-310 mx-auto px-5 sm:px-7 py-9 pb-16 grid grid-cols-1 md:grid-cols-[200px_1fr] lg:grid-cols-[244px_1fr] gap-10 items-start">
+                {/* Sidebar — inline from tablet up; mobile uses the Filters drawer below instead. */}
+                <aside className="hidden md:flex flex-col gap-6.5 lg:sticky lg:top-6">
+                    {filterPanel}
                 </aside>
+
+                {/* Mobile filter drawer */}
+                {showFilters && (
+                    <>
+                        <div onClick={() => setShowFilters(false)} className="fixed inset-0 bg-black/40 z-60 md:hidden" />
+                        <div className="fixed inset-y-0 left-0 z-70 w-[82%] max-w-xs bg-background p-6 overflow-y-auto md:hidden">
+                            <div className="flex items-center justify-between mb-5">
+                                <span className="font-bold text-lg text-text-hover">Filters</span>
+                                <button onClick={() => setShowFilters(false)} aria-label="Close filters" className="text-2xl text-text leading-none">×</button>
+                            </div>
+                            <div className="flex flex-col gap-6.5">{filterPanel}</div>
+                        </div>
+                    </>
+                )}
 
                 {/* Results */}
                 <div>
+                    <button
+                        onClick={() => setShowFilters(true)}
+                        className="md:hidden mb-4 flex items-center gap-2 rounded-full border border-primary-hover px-4 py-2 text-sm font-semibold text-text-hover"
+                    >
+                        ⚙ Filters
+                    </button>
                     <div className="flex justify-between items-center gap-4 mb-5 flex-wrap">
                         <div className="text-base text-text">
                             {textSearch ? `Search results for "${textSearch}" — ` : ''}
@@ -287,7 +320,7 @@ const ProductsContent = () => {
                         loader={<div className="text-center py-4 text-text">Loading more products…</div>}
                         endMessage={products.length > 0 ? <div className="text-center py-4 text-text">No more products</div> : null}
                     >
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                             {loading && page === 1
                                 ? loadingArrayCard.map((_, idx) => (
                                     <div key={idx} className="rounded-2xl overflow-hidden animate-pulse bg-white border border-primary-hover">
