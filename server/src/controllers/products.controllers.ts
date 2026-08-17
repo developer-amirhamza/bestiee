@@ -146,7 +146,7 @@ export const getProductsBySubcategory = async (req: Request, res: Response) => {
 
 export const getAllProductDetails = async (req: Request, res: Response) => {
     try {
-        const allProducts = await prisma.product.findMany();
+        const allProducts = await prisma.product.findMany({ where: { isActive: true } });
         if (!allProducts) return errorHandler(res, 404, "Products not found!");
         return errorHandler(res, 200, "The product got successfully!", false, allProducts);
     } catch (error: any) {
@@ -190,7 +190,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
 export const searchProducts = async (req: Request, res: Response) => {
   try {
     const {
-      q, category, minPrice, maxPrice, inStock,
+      q, category, minPrice, maxPrice, inStock, absorbency,
       sort,
       page = "1", limit = "20"
     } = req.query;
@@ -211,6 +211,11 @@ export const searchProducts = async (req: Request, res: Response) => {
     // Category filter — `category` is the Category id.
     if (category && typeof category === "string") {
       where.categoryId = category;
+    }
+
+    // Absorbency filter — free-text field on Product, matched exactly.
+    if (absorbency && typeof absorbency === "string") {
+      where.absorbency = absorbency;
     }
 
     // Price range
