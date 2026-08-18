@@ -216,11 +216,11 @@ const introStyles = `
 .intro-badge img{ width:64px; height:64px; }
 
 .intro-wordmark{
-  font-family:var(--font-primary,"DM Sans",sans-serif); font-weight:800;
+  font-family:var(--font-primary,"Hanken Grotesk",sans-serif); font-weight:800;
   font-size:32px; color:#fff; letter-spacing:-0.3px; opacity:0;
 }
 .intro-tagline{
-  font-family:var(--font-primary,"DM Sans",sans-serif); font-weight:500;
+  font-family:var(--font-primary,"Hanken Grotesk",sans-serif); font-weight:500;
   font-size:15px; color:rgba(255,255,255,.8); opacity:0;
 }
 

@@ -3,20 +3,6 @@ import Script from "next/script";
 import "./globals.css";
 import { ReduxProvider } from "@/redux/provider";
 import { Toaster } from "react-hot-toast";
-import { Inter, Playfair_Display } from "next/font/google";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  display: "swap",
-  weight: ["400", "500", "600", "700", "800", "900"],
-});
 
 export const metadata: Metadata = {
   title: "Bestiee",
@@ -27,9 +13,18 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
 
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="en">
       <head>
         <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+        {/* Loaded as a runtime <link>, not a CSS @import, so the build
+            pipeline never needs to fetch it — matches how the Bestiee
+            design source itself loads these two fonts. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap"
+          rel="stylesheet"
+        />
         {/* Google Tag Manager */}
         {gtmId && (
           <Script

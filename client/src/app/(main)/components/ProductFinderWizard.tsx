@@ -70,7 +70,7 @@ const ProductFinderWizard = () => {
         <section className="bg-background py-6">
             <div className="container mx-auto px-6 flex flex-col items-center text-center gap-4">
                 {/* <div className="w-12 h-12 bg-[#1a56db] rounded-xl flex items-center justify-center text-white font-extrabold text-lg">PF</div> */}
-                <h2 className="text-5xl font-secondary font-extrabold text-gray-900">Find Your Perfect Product</h2>
+                <h2 className="text-5xl font-secondary font-semibold text-gray-900">Find Your Perfect Product</h2>
                 <p className="text-gray-500 text-base max-w-md">Answer 4 quick questions and we'll match you with the right continence products.</p>
                 <button onClick={() => setStep(1)} className="flex items-center font-primary  shadow-xl hover:shadow-2xl  gap-3 bg-secondary hover:bg-secondary-hover text-background font-semibold px-6 py-3 rounded-full hover:scale-105 transition-all duration-300  text-sm">Start the quiz →</button>
             </div>
