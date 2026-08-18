@@ -41,10 +41,10 @@ export const sendTestEmail = async (req: AuthRequest, res: Response) => {
     const startedAt = Date.now();
     const result: any = await sendEmail({
       sendTo: to,
-      subject: `Aidble email test — ${new Date().toLocaleString("en-AU")}`,
+      subject: `Bestiee email test — ${new Date().toLocaleString("en-AU")}`,
       html: `<div style="font-family:sans-serif;max-width:520px">
                <h2 style="color:#2E7D71">✅ Email delivery is working</h2>
-               <p>This test was sent from the Aidble server.</p>
+               <p>This test was sent from the Bestiee server.</p>
                <ul>
                  <li><b>Provider:</b> ${cfg.provider}</li>
                  <li><b>SMTP host:</b> ${cfg.smtpHost ?? "—"}</li>

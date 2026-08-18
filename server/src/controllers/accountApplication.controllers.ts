@@ -8,7 +8,7 @@ interface AuthRequest extends Request {
   userId?: string;
 }
 
-const TEAM_EMAIL = "hello@aidble.com.au";
+const TEAM_EMAIL = "hello@mybestiee.com.au";
 
 // A logged-in consumer applies to become a TRADE or NDIS_COORDINATOR account.
 // Creates (or re-submits) an AccountApplication in PENDING status.
@@ -170,11 +170,11 @@ export const approveApplication = async (req: AuthRequest, res: Response) => {
 
     sendEmail({
       sendTo: application.user.email,
-      subject: "Your Aidble account has been approved",
+      subject: "Your Bestiee account has been approved",
       html: `<p>Hi ${application.user.firstName},</p>
              <p>Good news — your ${application.requestedRole === ROLES.TRADE ? "trade" : "NDIS coordinator"} account has been approved.
              You can now log in to access your portal.</p>
-             <p>— The Aidble team</p>`,
+             <p>— The Bestiee team</p>`,
     }).catch(() => {});
 
     return res.status(200).json({
@@ -213,7 +213,7 @@ export const rejectApplication = async (req: AuthRequest, res: Response) => {
 
     sendEmail({
       sendTo: application.user.email,
-      subject: "Update on your Aidble account application",
+      subject: "Update on your Bestiee account application",
       html: `<p>Hi ${application.user.firstName},</p>
              <p>Thank you for applying. Unfortunately we couldn't approve your application at this time.
              ${notes ? `<br/><b>Note:</b> ${notes}` : ""}</p>

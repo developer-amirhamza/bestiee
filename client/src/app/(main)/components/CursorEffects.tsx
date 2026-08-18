@@ -11,7 +11,7 @@ import { useEffect, useRef } from "react";
 // devices. Native cursor stays visible (accessibility) — the dot/ring are an
 // enhancement layered on top, never a replacement.
 //
-// Brand: teal #4F5B3A · sand #c9b89a
+// Brand: teal #0e4127 · sand #1f8049
 const INTERACTIVE = "a, button, [role='button'], input, select, textarea, label";
 
 export default function CursorEffects() {
@@ -65,7 +65,7 @@ export default function CursorEffects() {
         const onOver = (e: MouseEvent) => {
           const target = (e.target as Element)?.closest?.(INTERACTIVE);
           if (!target || (target as HTMLElement).dataset.noHoverFx !== undefined) return;
-          gsap.to(ring, { scale: 1.8, borderColor: "#4F5B3A", duration: 0.3 });
+          gsap.to(ring, { scale: 1, borderColor: "#0e4127", duration: 0.3 });
           gsap.to(dot, { scale: 0.5, duration: 0.3 });
           if (!lifted.has(target)) {
             lifted.add(target);
@@ -78,7 +78,7 @@ export default function CursorEffects() {
           // Only revert when truly leaving the element (not moving to a child).
           const to = e.relatedTarget as Element | null;
           if (to && target.contains(to)) return;
-          gsap.to(ring, { scale: 1, borderColor: "#c9b89a", duration: 0.3 });
+          gsap.to(ring, { scale: 1, borderColor: "#1f8049", duration: 0.3 });
           gsap.to(dot, { scale: 1, duration: 0.3 });
           if (lifted.has(target)) {
             lifted.delete(target);
@@ -129,7 +129,7 @@ export default function CursorEffects() {
           width: 36,
           height: 36,
           borderRadius: "50%",
-          border: "1.5px solid #c9b89a",
+          border: "1.5px solid #1f8049",
           zIndex: 9998,
           pointerEvents: "none",
           opacity: 0,
@@ -146,7 +146,7 @@ export default function CursorEffects() {
           width: 8,
           height: 8,
           borderRadius: "50%",
-          background: "#4F5B3A",
+          background: "#0e4127",
           zIndex: 9998,
           pointerEvents: "none",
           opacity: 0,

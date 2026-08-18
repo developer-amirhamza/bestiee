@@ -69,19 +69,19 @@ const ProductCard: React.FC<Type> = ({ data }) => {
                     </p>
                 )} */}
                 <div className="flex gap-2 items-center mt-2">
-                    <StarRating rating={averageRating} />
-                    <span className="text-sm text-orange-500">{averageRating} ({totalReviews} reviews)</span>
+                    <StarRating rating={averageRating} size={16} />
+                    <span className="text-sm text-orange-500">{averageRating} ({totalReviews})</span>
                 </div>
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2 mt-2">
                         <span className="text-[14px] font-bold text-gray-900">
                             {DisplayPriceInAud(finalPrice)}
                         </span>
-                        {hasDiscount && (
+                        {/* {hasDiscount && (
                             <span className="text-[13px] text-gray-400 line-through">
                                 {DisplayPriceInAud(Number(data?.price ?? 0))}
                             </span>
-                        )}
+                        )} */}
                         {data?.pack && (
                             <span className="text-[11px] text-gray-400">{data.pack}</span>
                         )}
