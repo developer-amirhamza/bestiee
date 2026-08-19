@@ -11,6 +11,7 @@ interface Faq {
     question: string;
     answer: string;
     blogId?: string | null;
+    category?: string | null;
     order: number;
     isActive: boolean;
 }
@@ -20,7 +21,19 @@ interface BlogOption {
     title: string;
 }
 
-const emptyForm = { question: "", answer: "", blogId: "", order: 0 };
+// The audience a FAQ is written for. Fixed list — not admin-editable.
+const FAQ_CATEGORIES = [
+    "NDIS Support Coordinators",
+    "Aged Care Facility Managers",
+    "Aged Care Nurses",
+    "Disability Support Workers",
+    "Family Carers",
+    "Pharmacists",
+    "Pharmacy Owners / Managers",
+    "Wholesalers / Medical Distributors",
+];
+
+const emptyForm = { question: "", answer: "", blogId: "", category: "", order: 0 };
 
 const AdminFaqsPage = () => {
     const [faqs, setFaqs] = useState<Faq[]>([]);
@@ -65,7 +78,7 @@ const AdminFaqsPage = () => {
 
     const openEdit = (f: Faq) => {
         setEditing(f);
-        setForm({ question: f.question, answer: f.answer, blogId: f.blogId || "", order: f.order });
+        setForm({ question: f.question, answer: f.answer, blogId: f.blogId || "", category: f.category || "", order: f.order });
         setShowModal(true);
     };
 
@@ -79,7 +92,7 @@ const AdminFaqsPage = () => {
         }
         try {
             setSaving(true);
-            const payload = { ...form, blogId: form.blogId || undefined };
+            const payload = { ...form, blogId: form.blogId || undefined, category: form.category || undefined };
             let res;
             if (editing) {
                 res = await Axios({ ...SummeryApi.updateFaq, data: { id: editing.id, ...payload } });
@@ -159,6 +172,7 @@ const AdminFaqsPage = () => {
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">#</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Question</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Shows on</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
@@ -167,7 +181,7 @@ const AdminFaqsPage = () => {
                     <tbody className="bg-white divide-y divide-gray-200">
                         {faqs.length === 0 ? (
                             <tr>
-                                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                                <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
                                     No FAQs yet. Add your first one!
                                 </td>
                             </tr>
@@ -178,6 +192,9 @@ const AdminFaqsPage = () => {
                                     <td className="px-6 py-4 max-w-md">
                                         <p className="font-semibold text-gray-800 text-sm">{f.question}</p>
                                         <p className="text-xs text-gray-400 line-clamp-1">{f.answer}</p>
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-gray-600">
+                                        {f.category || <span className="text-gray-400">—</span>}
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-600">
                                         {f.blogId ? (blogTitle(f.blogId) || "Article") : "FAQ page"}
@@ -246,6 +263,19 @@ const AdminFaqsPage = () => {
                                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                                     placeholder="The answer shown to visitors"
                                 />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                <select
+                                    value={form.category}
+                                    onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <option value="">No category</option>
+                                    {FAQ_CATEGORIES.map((c) => (
+                                        <option key={c} value={c}>{c}</option>
+                                    ))}
+                                </select>
                             </div>
                             <div className="grid grid-cols-2 gap-3">
                                 <div>

@@ -30,13 +30,14 @@ export const getAllFaqs = async (_req: Request, res: Response) => {
 
 export const createFaq = async (req: Request, res: Response) => {
   try {
-    const { question, answer, blogId, order, isActive } = req.body;
+    const { question, answer, blogId, category, order, isActive } = req.body;
     if (!question || !answer) return errorHandler(res, 400, 'Question and answer are required');
     const faq = await prisma.faq.create({
       data: {
         question,
         answer,
         blogId: blogId || null,
+        category: category || null,
         order: order ?? 0,
         isActive: isActive ?? true,
       },
@@ -49,7 +50,7 @@ export const createFaq = async (req: Request, res: Response) => {
 
 export const updateFaq = async (req: Request, res: Response) => {
   try {
-    const { id, question, answer, blogId, order, isActive } = req.body;
+    const { id, question, answer, blogId, category, order, isActive } = req.body;
     if (!id) return errorHandler(res, 400, 'FAQ ID is required');
     const existing = await prisma.faq.findUnique({ where: { id } });
     if (!existing) return errorHandler(res, 404, 'FAQ not found');
@@ -57,6 +58,7 @@ export const updateFaq = async (req: Request, res: Response) => {
     if (question !== undefined) data.question = question;
     if (answer !== undefined) data.answer = answer;
     if (blogId !== undefined) data.blogId = blogId || null;
+    if (category !== undefined) data.category = category || null;
     if (order !== undefined) data.order = order;
     if (isActive !== undefined) data.isActive = isActive;
     const updated = await prisma.faq.update({ where: { id }, data });

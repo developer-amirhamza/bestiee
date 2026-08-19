@@ -400,12 +400,16 @@ model Faq {
   question  String
   answer    String
   blogId    String?
+  // Audience this FAQ is written for, e.g. "Family Carers" or "Pharmacists"
+  // — one of a fixed list the admin picks from when creating a FAQ.
+  category  String?
   order     Int      @default(0)
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([blogId])
+  @@index([category])
 }
 
 model TeamTask {
