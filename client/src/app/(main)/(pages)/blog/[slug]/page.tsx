@@ -49,7 +49,7 @@ const BlogDetailPage = () => {
 
   useEffect(() => {
     if (!blog?.id) return;
-    Axios({ ...SummeryApi.getFaqs, params: { blogId: blog.id } })
+    Axios({ ...SummeryApi.getFaqs, params: { surface: "BLOG_POST", blogId: blog.id } })
       .then((res) => {
         if (res.data?.success) setFaqs(res.data.data);
       })

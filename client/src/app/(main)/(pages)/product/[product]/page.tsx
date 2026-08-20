@@ -15,6 +15,7 @@ import { RootState, AppDispatch } from '@/redux/store';
 import AddToCartButton from '@/app/(main)/components/UI/AddToCartBtn';
 import Breadcrumb from '@/app/(main)/components/UI/Breadcrumb';
 import SizeFinder from '@/app/(main)/components/SizeFinder';
+import FaqAccordion, { FaqItem } from '@/app/(main)/components/UI/FaqAccordion';
 
 type Tab = 'details' | 'reviews';
 
@@ -36,6 +37,8 @@ const ProductDetailsPage = () => {
     const [image, setImage] = useState(0);
     const [tab, setTab] = useState<Tab>('details');
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
+
+    const [faqs, setFaqs] = useState<FaqItem[]>([]);
 
     const [rating, setRating] = useState(0);
     const [reviewComment, setReviewComment] = useState("");
@@ -76,6 +79,15 @@ const ProductDetailsPage = () => {
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "instant" });
     }, []);
+
+    useEffect(() => {
+        if (!productId) return;
+        Axios({ ...SummeryApi.getFaqs, params: { surface: "PRODUCT_PAGE", productId } })
+            .then((res) => {
+                if (res.data?.success) setFaqs(res.data.data);
+            })
+            .catch(() => { /* embedded FAQs are optional — fail silently */ });
+    }, [productId]);
 
     const handleAddReview = async () => {
         if (!user) {
@@ -392,6 +404,13 @@ const ProductDetailsPage = () => {
                                 </div>
                             ))}
                         </div>
+                    </div>
+                )}
+
+                {faqs.length > 0 && (
+                    <div className="border-t border-primary-hover mt-12 pt-8 max-w-3xl">
+                        <h2 className="font-secondary text-2xl text-text-hover mb-5">Frequently asked questions</h2>
+                        <FaqAccordion faqs={faqs} />
                     </div>
                 )}
             </div>

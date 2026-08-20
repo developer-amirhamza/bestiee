@@ -5,6 +5,7 @@ export interface FaqItem {
   id: string;
   question: string;
   answer: string;
+  category?: string | null;
 }
 
 // Renders an accordion for a list of Q&As and emits matching FAQPage

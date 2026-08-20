@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +9,7 @@ import { normaliseRole, ROLES } from "@/utils/roles";
 import Axios from "@/utils/Axios";
 import { SummeryApi } from "@/app/common/SummeryApi";
 import { TbHomeMove } from "react-icons/tb";
+import FaqAccordion, { FaqItem } from "@/app/(main)/components/UI/FaqAccordion";
 
 // Navigation per role — only the links relevant to the signed-in account show.
 const NAV: Record<string, { label: string; href: string }[]> = {
@@ -33,11 +34,20 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
   const router = useRouter();
   const pathname = usePathname();
   const { user, status } = useSelector((state: RootState) => state.userSlice);
+  const [faqs, setFaqs] = useState<FaqItem[]>([]);
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (token && status === "idle") dispatch(fetchUser());
   }, [status, dispatch]);
+
+  useEffect(() => {
+    Axios({ ...SummeryApi.getFaqs, params: { surface: "PORTAL" } })
+      .then((res) => {
+        if (res.data?.success) setFaqs(res.data.data);
+      })
+      .catch(() => { /* embedded FAQs are optional — fail silently */ });
+  }, []);
 
   const role = normaliseRole(user?.role);
   const links = NAV[role] ?? [];
@@ -106,7 +116,15 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
       </aside>
 
       {/* Main */}
-      <main className="flex-1 min-w-0">{children}</main>
+      <main className="flex-1 min-w-0">
+        {children}
+        {faqs.length > 0 && (
+          <div className="border-t border-[#e5ddd5] mt-4 px-6 py-10 max-w-3xl">
+            <h2 className="font-secondary text-2xl text-[#1a1a18] mb-5">Frequently asked questions</h2>
+            <FaqAccordion faqs={faqs} />
+          </div>
+        )}
+      </main>
     </div>
   );
 }

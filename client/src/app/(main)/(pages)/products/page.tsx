@@ -15,6 +15,7 @@ import { validURLConvert } from '@/utils/validURLConvart';
 import AddToCartButton from '../../components/UI/AddToCartBtn';
 import Loader from '../../components/UI/Loader';
 import Breadcrumb from '../../components/UI/Breadcrumb';
+import FaqAccordion, { FaqItem } from '../../components/UI/FaqAccordion';
 
 interface Product {
     id: string;
@@ -60,8 +61,17 @@ const ProductsContent = () => {
     // option list is derived from the catalog itself — same approach used for
     // the blog page's category tabs.
     const [absorbencyOptions, setAbsorbencyOptions] = useState<string[]>([]);
+    const [faqs, setFaqs] = useState<FaqItem[]>([]);
 
     const loadingArrayCard = new Array(9).fill(null);
+
+    useEffect(() => {
+        Axios({ ...SummeryApi.getFaqs, params: { surface: 'PRODUCT_LIST' } })
+            .then((res) => {
+                if (res.data?.success) setFaqs(res.data.data);
+            })
+            .catch(() => { /* embedded FAQs are optional — fail silently */ });
+    }, []);
 
     useEffect(() => {
         if (categories.length === 0) {
@@ -416,6 +426,15 @@ const ProductsContent = () => {
                     )}
                 </div>
             </section>
+
+            {faqs.length > 0 && (
+                <section className="max-w-310 mx-auto px-5 sm:px-7 pb-16">
+                    <div className="border-t border-primary-hover pt-10">
+                        <h2 className="font-secondary text-2xl text-text-hover mb-5">Frequently asked questions</h2>
+                        <FaqAccordion faqs={faqs} />
+                    </div>
+                </section>
+            )}
         </div>
     );
 };

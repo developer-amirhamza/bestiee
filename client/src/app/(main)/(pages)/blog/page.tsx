@@ -6,6 +6,7 @@ import Axios from '@/utils/Axios';
 import { SummeryApi } from '@/app/common/SummeryApi';
 import Loader from '../../components/UI/Loader';
 import Breadcrumb from '../../components/UI/Breadcrumb';
+import FaqAccordion, { FaqItem } from '../../components/UI/FaqAccordion';
 
 interface Blog {
   id: string;
@@ -43,6 +44,15 @@ const BlogPageContent = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [faqs, setFaqs] = useState<FaqItem[]>([]);
+
+  useEffect(() => {
+    Axios({ ...SummeryApi.getFaqs, params: { surface: 'BLOG_LIST' } })
+      .then((res) => {
+        if (res.data?.success) setFaqs(res.data.data);
+      })
+      .catch(() => { /* embedded FAQs are optional — fail silently */ });
+  }, []);
 
   // Derive the category tab list once from a broader sample of posts —
   // there's no fixed enum for category, it's free text on the Blog model.
@@ -177,6 +187,13 @@ const BlogPageContent = () => {
               </div>
             )}
           </>
+        )}
+
+        {faqs.length > 0 && (
+          <div className="border-t border-primary-hover mt-14 pt-10">
+            <h2 className="font-secondary text-2xl text-text-hover mb-5">Frequently asked questions</h2>
+            <FaqAccordion faqs={faqs} />
+          </div>
         )}
       </div>
     </div>

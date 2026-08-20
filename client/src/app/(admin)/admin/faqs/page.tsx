@@ -6,17 +6,26 @@ import AxiosToastError from "@/utils/AxiosToastError";
 import toast from "react-hot-toast";
 import { FaTrash, FaEdit, FaPlus, FaTimes } from "react-icons/fa";
 
+type Surface = "FAQ_PAGE" | "BLOG_POST" | "BLOG_LIST" | "PRODUCT_PAGE" | "PRODUCT_LIST" | "PORTAL";
+
 interface Faq {
     id: string;
     question: string;
     answer: string;
+    surface: Surface;
     blogId?: string | null;
+    productId?: string | null;
     category?: string | null;
     order: number;
     isActive: boolean;
 }
 
 interface BlogOption {
+    id: string;
+    title: string;
+}
+
+interface ProductOption {
     id: string;
     title: string;
 }
@@ -33,11 +42,25 @@ const FAQ_CATEGORIES = [
     "Wholesalers / Medical Distributors",
 ];
 
-const emptyForm = { question: "", answer: "", blogId: "", category: "", order: 0 };
+// Which page a FAQ shows on, and what (if anything) it needs to target
+// a specific item on that page.
+const SURFACES: { value: Surface; label: string }[] = [
+    { value: "FAQ_PAGE", label: "FAQ page" },
+    { value: "BLOG_POST", label: "Blog page (a specific article)" },
+    { value: "BLOG_LIST", label: "Blog list page" },
+    { value: "PRODUCT_PAGE", label: "Product page (a specific product)" },
+    { value: "PRODUCT_LIST", label: "Product list page" },
+    { value: "PORTAL", label: "Portal pages" },
+];
+
+const surfaceLabel = (s: Surface) => SURFACES.find((x) => x.value === s)?.label ?? s;
+
+const emptyForm = { question: "", answer: "", surface: "FAQ_PAGE" as Surface, blogId: "", productId: "", category: "", order: 0 };
 
 const AdminFaqsPage = () => {
     const [faqs, setFaqs] = useState<Faq[]>([]);
     const [blogs, setBlogs] = useState<BlogOption[]>([]);
+    const [products, setProducts] = useState<ProductOption[]>([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editing, setEditing] = useState<Faq | null>(null);
@@ -66,9 +89,25 @@ const AdminFaqsPage = () => {
         }
     };
 
-    useEffect(() => { fetchFaqs(); fetchBlogs(); }, []);
+    const fetchProducts = async () => {
+        try {
+            const res = await Axios({ ...SummeryApi.searchProduct, params: { page: 1, limit: 200 } });
+            if (res.data?.success) setProducts((res.data.data || []).map((p: any) => ({ id: p.id, title: p.title })));
+        } catch {
+            /* the product picker is a nice-to-have, not required to manage FAQs */
+        }
+    };
+
+    useEffect(() => { fetchFaqs(); fetchBlogs(); fetchProducts(); }, []);
 
     const blogTitle = (blogId?: string | null) => blogs.find((b) => b.id === blogId)?.title;
+    const productTitle = (productId?: string | null) => products.find((p) => p.id === productId)?.title;
+
+    const showsOnLabel = (f: Faq) => {
+        if (f.surface === "BLOG_POST") return `Blog post: ${blogTitle(f.blogId) || "Untitled article"}`;
+        if (f.surface === "PRODUCT_PAGE") return `Product: ${productTitle(f.productId) || "Untitled product"}`;
+        return surfaceLabel(f.surface);
+    };
 
     const openCreate = () => {
         setEditing(null);
@@ -78,7 +117,15 @@ const AdminFaqsPage = () => {
 
     const openEdit = (f: Faq) => {
         setEditing(f);
-        setForm({ question: f.question, answer: f.answer, blogId: f.blogId || "", category: f.category || "", order: f.order });
+        setForm({
+            question: f.question,
+            answer: f.answer,
+            surface: f.surface,
+            blogId: f.blogId || "",
+            productId: f.productId || "",
+            category: f.category || "",
+            order: f.order,
+        });
         setShowModal(true);
     };
 
@@ -90,9 +137,25 @@ const AdminFaqsPage = () => {
             toast.error("Question and answer are required");
             return;
         }
+        if (form.surface === "BLOG_POST" && !form.blogId) {
+            toast.error("Choose which blog post this shows on");
+            return;
+        }
+        if (form.surface === "PRODUCT_PAGE" && !form.productId) {
+            toast.error("Choose which product this shows on");
+            return;
+        }
         try {
             setSaving(true);
-            const payload = { ...form, blogId: form.blogId || undefined, category: form.category || undefined };
+            const payload = {
+                question: form.question,
+                answer: form.answer,
+                surface: form.surface,
+                order: form.order,
+                blogId: form.surface === "BLOG_POST" ? form.blogId : undefined,
+                productId: form.surface === "PRODUCT_PAGE" ? form.productId : undefined,
+                category: form.surface === "FAQ_PAGE" ? (form.category || undefined) : undefined,
+            };
             let res;
             if (editing) {
                 res = await Axios({ ...SummeryApi.updateFaq, data: { id: editing.id, ...payload } });
@@ -155,7 +218,7 @@ const AdminFaqsPage = () => {
                 <div>
                     <h1 className="text-3xl font-bold text-gray-800">FAQs</h1>
                     <p className="text-sm text-gray-500 mt-1">
-                        Standalone entries appear on the public /faq page. Attach one to an article to show it as that article&apos;s embedded FAQ section instead.
+                        Choose which page a FAQ shows on — the standalone FAQ page, a specific article or product, a list page, or the account portal.
                     </p>
                 </div>
                 <button
@@ -197,7 +260,7 @@ const AdminFaqsPage = () => {
                                         {f.category || <span className="text-gray-400">—</span>}
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-600">
-                                        {f.blogId ? (blogTitle(f.blogId) || "Article") : "FAQ page"}
+                                        {showsOnLabel(f)}
                                     </td>
                                     <td className="px-6 py-4">
                                         <button
@@ -264,43 +327,78 @@ const AdminFaqsPage = () => {
                                     placeholder="The answer shown to visitors"
                                 />
                             </div>
+
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Shows on</label>
                                 <select
-                                    value={form.category}
-                                    onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+                                    value={form.surface}
+                                    onChange={(e) => setForm((f) => ({ ...f, surface: e.target.value as Surface }))}
                                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
-                                    <option value="">No category</option>
-                                    {FAQ_CATEGORIES.map((c) => (
-                                        <option key={c} value={c}>{c}</option>
+                                    {SURFACES.map((s) => (
+                                        <option key={s.value} value={s.value}>{s.label}</option>
                                     ))}
                                 </select>
                             </div>
-                            <div className="grid grid-cols-2 gap-3">
+
+                            {form.surface === "FAQ_PAGE" && (
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Shows on</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                    <select
+                                        value={form.category}
+                                        onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    >
+                                        <option value="">No category</option>
+                                        {FAQ_CATEGORIES.map((c) => (
+                                            <option key={c} value={c}>{c}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+
+                            {form.surface === "BLOG_POST" && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Blog post *</label>
                                     <select
                                         value={form.blogId}
                                         onChange={(e) => setForm((f) => ({ ...f, blogId: e.target.value }))}
                                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     >
-                                        <option value="">FAQ page (standalone)</option>
+                                        <option value="">Select an article…</option>
                                         {blogs.map((b) => (
                                             <option key={b.id} value={b.id}>{b.title}</option>
                                         ))}
                                     </select>
                                 </div>
+                            )}
+
+                            {form.surface === "PRODUCT_PAGE" && (
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
-                                    <input
-                                        type="number"
-                                        value={form.order}
-                                        onChange={(e) => setForm((f) => ({ ...f, order: Number(e.target.value) }))}
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Product *</label>
+                                    <select
+                                        value={form.productId}
+                                        onChange={(e) => setForm((f) => ({ ...f, productId: e.target.value }))}
                                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
+                                    >
+                                        <option value="">Select a product…</option>
+                                        {products.map((p) => (
+                                            <option key={p.id} value={p.id}>{p.title}</option>
+                                        ))}
+                                    </select>
                                 </div>
+                            )}
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
+                                <input
+                                    type="number"
+                                    value={form.order}
+                                    onChange={(e) => setForm((f) => ({ ...f, order: Number(e.target.value) }))}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
                             </div>
+
                             <div className="flex justify-end gap-3 pt-2">
                                 <button
                                     type="button"
