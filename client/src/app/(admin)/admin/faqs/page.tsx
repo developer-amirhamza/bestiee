@@ -223,7 +223,7 @@ const AdminFaqsPage = () => {
                 </div>
                 <button
                     onClick={openCreate}
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg transition"
+                    className="flex items-center gap-2 bg-secondary-hover hover:bg-secondary text-white font-bold py-2 px-5 rounded-lg transition"
                 >
                     <FaPlus className="text-sm" /> Add FAQ
                 </button>
@@ -296,13 +296,13 @@ const AdminFaqsPage = () => {
             </div>
 
             {showModal && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg">
+                <div className="fixed inset-0 bg-black/50 z-100 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg h-full overflow-y-scroll ">
                         <div className="flex justify-between items-center p-6 border-b">
                             <h2 className="text-xl font-bold text-gray-800">
                                 {editing ? "Edit FAQ" : "Add FAQ"}
                             </h2>
-                            <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">
+                            <button onClick={closeModal} className="text-gray-400 hover:bg-orange-200 p-1 rounded-full cursor-pointer hover:text-gray-600">
                                 <FaTimes />
                             </button>
                         </div>
@@ -410,7 +410,7 @@ const AdminFaqsPage = () => {
                                 <button
                                     type="submit"
                                     disabled={saving}
-                                    className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition disabled:opacity-60"
+                                    className="px-5 py-2 bg-secondary-hover hover:bg-secondary cursor-pointer text-white rounded-lg font-medium transition disabled:opacity-60"
                                 >
                                     {saving ? "Saving..." : editing ? "Save Changes" : "Create"}
                                 </button>
