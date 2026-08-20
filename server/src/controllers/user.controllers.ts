@@ -23,7 +23,7 @@ interface AuthRequest extends Request {
 const SignUp = async (req: Request, res: Response) => {
     try {
         console.log(req.body, "test user")
-        const { firstName, lastName, email, mobile, password, } = req.body;
+        const { firstName, lastName, email, mobile, password,role } = req.body;
 
         const id = uuidv4();
         if (!firstName || !email || !password) {
@@ -46,6 +46,7 @@ const SignUp = async (req: Request, res: Response) => {
                 firstName,
                 lastName,
                 email,
+                role,
                 password: hashPassword,
                 verify_email: false,
                 status: "ACTIVE",

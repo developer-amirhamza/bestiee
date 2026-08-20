@@ -96,7 +96,7 @@ export default function ConsumerOrders() {
                     <button
                       disabled={busyId === o.id}
                       onClick={() => reorder(o.id)}
-                      className="text-[#1a56db] hover:underline text-xs font-semibold disabled:opacity-50"
+                      className="text-secondary-hover hover:underline text-xs font-semibold disabled:opacity-50"
                     >
                       {busyId === o.id ? "…" : "Reorder"}
                     </button>

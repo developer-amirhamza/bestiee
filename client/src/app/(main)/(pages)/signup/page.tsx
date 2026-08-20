@@ -14,19 +14,29 @@ import { fetchCart } from '@/redux/slices/cartSlice';
 import { AppDispatch } from '@/redux/store';
 import AxiosToastError from '@/utils/AxiosToastError';
 import Link from 'next/link';
+import { portalPath } from '@/utils/roles';
 
 const initialFormData = {
     firstName: "",
     lastName: "",
     email: "",
     password: "",
+    role:"",
 }
+
+const ASSIGNABLE_ROLES = [
+    { value: 'CONSUMER', label: 'Consumer' },
+    { value: 'TRADE', label: 'Retailer' },
+    // { value: 'DISTRIBUTOR', label: 'Distributor' },
+    { value: 'NDIS_COORDINATOR', label: 'NDIS Coordinator' },
+];
+
 const SingUp = () => {
     const [formData, setFormData] = useState(initialFormData);
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter()
     const dispatch = useDispatch<AppDispatch>()
-    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleOnChange = (e: any) => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
@@ -43,7 +53,6 @@ const SingUp = () => {
             });
 
             const responseData = response.data;
-            console.log(responseData.success,"test")
             if (responseData.success) {
                 toast.success(responseData.message);
                 const response = await Axios({
@@ -63,7 +72,8 @@ const SingUp = () => {
                     dispatch(setUserDetails(userDetails?.data))
                     dispatch(fetchCart())
                     setFormData(initialFormData)
-                    router.push("/verify-email")
+                    const role = response?.data?.data?.user?.role;
+                    router.push(portalPath(role))
                 }
             } else {
                 toast.error(responseData.message)
@@ -117,6 +127,15 @@ const SingUp = () => {
                                         : <FaEyeSlash onClick={() => setShowPassword(true)} />}
                                 </div>
                             </div>
+                        </div>
+                        <div className="grid gap-2 place-items-start">
+                            <label htmlFor="role" className="font-medium text-text">I am a..*</label>
+                                <select name="role" id="role" value={formData.role} onChange={handleOnChange}
+                                className='w-full font-medium text-neutral-700 p-2 outline-none border-2 border-secondary-hover rounded focus-within:border-secondary' >
+                                    {ASSIGNABLE_ROLES.map((role,idx)=>(
+                                        <option key={idx} value={role.value} >{role.label}</option>
+                                    ))}
+                                </select>
                         </div>
                         <button disabled={!validInput} type="submit" value="Submit"
                             className={`${validInput ? "bg-secondary-hover text-white  cursor-pointer hover:bg-secondary" : "bg-primary-hover   cursor-not-allowed"}  p-2 text-neutral-900

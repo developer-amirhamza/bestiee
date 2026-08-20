@@ -65,7 +65,7 @@ const VerifyEmailContent = () => {
                             <p className="text-text-hover text-base">{message}</p>
                         </>
                     )}
-                    <Link href={"/"} className='text-xl font-bold text-secondary hover:underline'>Continue to Health U Shop</Link>
+                    <Link href={"/"} className='text-xl font-bold text-secondary hover:underline'>Continue to your portal </Link>
                 </div>
             </div>
         </section>

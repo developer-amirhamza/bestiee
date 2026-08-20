@@ -212,7 +212,7 @@ export default function QuoteBuilder() {
           <div key={label} className="flex items-center gap-2">
             <span
               className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold ${
-                i <= step ? "bg-[#2f7d6f] text-white" : "bg-gray-200 text-gray-500"
+                i <= step ? "bg-secondary text-white" : "bg-gray-200 text-gray-500"
               }`}
             >
               {i + 1}
@@ -259,15 +259,15 @@ export default function QuoteBuilder() {
                     onClick={() => setSupplyPeriod(p.value)}
                     className={`py-2.5 px-2 rounded-lg text-sm font-medium border transition-colors ${
                       supplyPeriod === p.value
-                        ? "bg-[#2f7d6f] text-white border-[#2f7d6f]"
-                        : "bg-white text-gray-600 border-gray-300 hover:border-[#2f7d6f]"
+                        ? "bg-secondary text-white border-secondary"
+                        : "bg-white text-gray-600 border-gray-300 hover:border-secondary"
                     }`}
                   >
                     {p.value}
                     {p.hint && (
                       <span
                         className={`block text-[11px] font-semibold ${
-                          supplyPeriod === p.value ? "text-[#c9e8e2]" : "text-[#2f7d6f]"
+                          supplyPeriod === p.value ? "text-[#c9e8e2]" : "text-title"
                         }`}
                       >
                         {p.hint}
@@ -280,7 +280,7 @@ export default function QuoteBuilder() {
                 const active = PERIODS.find((p) => p.value === supplyPeriod);
                 if (!active?.hint) return null;
                 return (
-                  <p className="text-xs text-[#2f7d6f] mt-1">
+                  <p className="text-sm text-secondary font-medium mt-1">
                     {supplyPeriod === "Annual"
                       ? "Annual supply applies the 12-month discount automatically."
                       : `Recurring ${supplyPeriod.toLowerCase()} supply — ${active.hint} is applied automatically.`}
@@ -504,7 +504,7 @@ export default function QuoteBuilder() {
           <button
             onClick={() => stepValid && setStep((s) => s + 1)}
             disabled={!stepValid}
-            className="px-6 py-2.5 rounded-full text-sm font-semibold bg-[#2f7d6f] text-white hover:bg-[#27675b] disabled:opacity-50"
+            className="px-6 py-2.5 rounded-full text-sm font-semibold bg-secondary-hover cursor-pointer text-white hover:bg-secondary disabled:opacity-50"
           >
             Continue
           </button>

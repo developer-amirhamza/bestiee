@@ -28,7 +28,8 @@ const NAV_LINKS = [
     { label: 'NDIS & Support', href: '/apply/ndis' },
     { label: 'Trade', href: '/apply/trade' },
     { label: 'Blog', href: '/blog' },
-    { label: 'Community', href: '/#community' },
+    // { label: 'Community', href: '/#community' },
+    { label: "FAQ", href: "/faq" },
     { label: 'Contact', href: '/contact-us' },
 ]
 
@@ -49,19 +50,19 @@ const Header = () => {
     const shopRef = useRef<HTMLDivElement>(null)
     const prevCartCount = useRef<number | null>(null)
 
-    useEffect(()=>{
-        const handleScroll = ()=>{
-            if(window.scrollY === 0){
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY === 0) {
                 setTopbarVisible(true)
-            }else{
+            } else {
                 setTopbarVisible(false)
             }
         }
         window.addEventListener("scroll", handleScroll)
-        return ()=>{
+        return () => {
             window.removeEventListener("scroll", handleScroll)
         }
-    },[])
+    }, [])
 
     useEffect(() => {
         if (status === 'idle') dispatch(fetchCart())
@@ -122,22 +123,22 @@ const Header = () => {
                 className={`bg-secondary text-background transition-all duration-300 overflow-hidden top-bar
                     ${topbarVisible ? " max-h-10 opacity-100" : " max-h-0 opacity-0"} `}
             >
-            <AutoScrollSlider speed={30} gap={50}
-            className="container mx-auto flex items-center w-full overflow-x-hidden justify-between px-4 h-7 text-sm"
-            >
+                <AutoScrollSlider speed={30} gap={50}
+                    className="container mx-auto flex items-center w-full overflow-x-hidden justify-between px-4 h-7 text-sm"
+                >
                     <div className="flex items-center gap-2 whitespace-nowrap">
                         <FaTruck className="text-primary shrink-0" />
                         <span className="font-medium">Free, discreet shipping Australia-wide on orders over $99</span>
                     </div>
-                        <a href="tel:1300243253" className="flex whitespace-nowrap items-center gap-1.5 hover:text-primary transition-colors">
-                            <IoCall />
-                            <span className="font-semibold">1300 243 253</span>
-                        </a>
-                        <div className="flex items-center gap-1.5 whitespace-nowrap">
-                            <MdVerified className="text-primary" />
-                            <span>Registered NDIS provider</span>
-                        </div>
-            </AutoScrollSlider>
+                    <a href="tel:1300243253" className="flex whitespace-nowrap items-center gap-1.5 hover:text-primary transition-colors">
+                        <IoCall />
+                        <span className="font-semibold">1300 243 253</span>
+                    </a>
+                    <div className="flex items-center gap-1.5 whitespace-nowrap">
+                        <MdVerified className="text-primary" />
+                        <span>Registered NDIS provider</span>
+                    </div>
+                </AutoScrollSlider>
 
             </div>
 

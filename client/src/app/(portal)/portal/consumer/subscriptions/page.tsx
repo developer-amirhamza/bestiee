@@ -93,7 +93,7 @@ function SubscriptionsInner() {
         <h1 className="font-serif text-4xl text-gray-900 mt-1">Subscriptions</h1>
         <button
           onClick={() => setCreating((c) => !c)}
-          className="px-5 py-2.5 rounded-full text-sm font-semibold bg-[#1a56db] text-white hover:bg-blue-700"
+          className="px-5 py-2.5 rounded-full text-sm font-semibold bg-secondary-hover text-white hover:bg-secondary cursor-pointer"
         >
           {creating ? "Cancel" : "+ New subscription"}
         </button>
@@ -161,7 +161,7 @@ function SubscriptionsInner() {
           <button
             onClick={create}
             disabled={busy}
-            className="self-start bg-[#1a1a18] text-white font-semibold text-sm px-6 py-2.5 rounded-full hover:bg-[#33312c] disabled:opacity-50"
+            className="self-start bg-[#1a1a18] text-white font-semibold text-sm px-6 py-2.5 cursor-pointer rounded-full hover:bg-[#33312c] disabled:opacity-50"
           >
             Create subscription
           </button>

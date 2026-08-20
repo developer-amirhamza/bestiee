@@ -37,8 +37,8 @@ export default function IntroOverlay() {
 
   useEffect(() => {
     // Dev: show on every load. Production: once per browser, ever.
-    const isDev = process.env.NODE_ENV !== "production";
-    if (!isDev) {
+    // const isDev = process.env.NODE_ENV == "production";
+    // if (!isDev) {
       let seen = false;
       try {
         seen = localStorage.getItem(INTRO_SEEN_KEY) === "1";
@@ -52,15 +52,15 @@ export default function IntroOverlay() {
         setShow(false);
         return;
       }
-    }
+    // }
 
-    if (!isDev) {
+    // if (!isDev) {
       try {
         localStorage.setItem(INTRO_SEEN_KEY, "1");
       } catch {
         /* ignore */
       }
-    }
+    // }
 
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
