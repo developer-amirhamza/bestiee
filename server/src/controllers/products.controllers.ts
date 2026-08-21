@@ -7,7 +7,7 @@ import { prisma } from "../lib/prisma";
 export const createProduct = async (req: Request, res: Response) => {
     try {
         const { title, price, description, colors, sizes, discount, more_details, category, stock, images,categoryId, subcategoryId } = req.body;
-        if (!title || !price || !discount) {
+        if (!title || !price ) {
             return errorHandler(res, 400, "Please provide the required fields", true)
         }
         // Reject NaN/negative price or discount — a bad value here corrupts

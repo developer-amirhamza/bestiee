@@ -238,9 +238,9 @@ const ProductDetailsPage = () => {
 
                                 <div className="flex items-baseline gap-3 mt-4">
                                     <span className="font-primary text-4xl text-text-hover">{DisplayPriceInAud(finalPrice)}</span>
-                                    {data.discount > 0 && (
+                                    {/* {data.discount > 0 && (
                                         <span className="line-through text-text text-xl">{DisplayPriceInAud(data.price)}</span>
-                                    )}
+                                    )} */}
                                     {data.pack && <span className="text-text">{data.pack}</span>}
                                 </div>
                                 {data.pricingNotes && (

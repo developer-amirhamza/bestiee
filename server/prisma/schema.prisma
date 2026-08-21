@@ -225,7 +225,7 @@ model Product {
   images        String[]
   description   String?
   price         Float
-  discount      Float
+  discount      Float?
   stock         Int          @default(0)
   colors        String[]
   categoryId    String?
