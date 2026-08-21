@@ -28,6 +28,7 @@ import uploadImageRouter from "./routes/uploadImage.route"
 import trainingSessionRouter from "./routes/trainingSession.routes"
 import redditPostRouter from "./routes/redditPost.routes"
 import faqRouter from "./routes/faq.routes"
+import scBillingRouter from "./routes/scBilling.routes"
 
 config();
 const app = express();
@@ -70,6 +71,7 @@ app.use("/api/image", uploadImageRouter);
 app.use("/api/training-sessions", trainingSessionRouter);
 app.use("/api/reddit-posts", redditPostRouter);
 app.use("/api/faqs", faqRouter);
+app.use("/api/sc-billing", scBillingRouter);
 
 
 

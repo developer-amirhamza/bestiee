@@ -419,6 +419,55 @@ model Faq {
   @@index([category])
 }
 
+// A participant's support-coordination NDIS plan: budget, billing rates and
+// item codes for claims, and the plan's date window. `startDate`/`endDate`
+// are plain "YYYY-MM-DD" calendar dates (not DateTime) because all budget
+// pacing math in the admin UI works in whole calendar days with no time
+// component or timezone — storing them as DateTime would just reintroduce
+// timezone-shift bugs into date-only arithmetic that doesn't need one.
+model ScPlan {
+  id             String        @id @default(dbgenerated("gen_random_uuid()"))
+  participant    String
+  ndisNumber     String?
+  coordinator    String
+  rate           Float
+  travelRate     Float         @default(0)
+  itemCode       String
+  travelItemCode String?
+  budget         Float         @default(0)
+  startDate      String
+  endDate        String
+  reportLeadDays Int           @default(42)
+  color          String        @default("#2f6feb")
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  entries        ScTimeEntry[]
+}
+
+// A single logged support-coordination time entry (support or travel),
+// billed against its plan's rate/travelRate. Deleting a plan with entries
+// is blocked in the controller rather than cascaded, so billing history
+// is never silently lost.
+model ScTimeEntry {
+  id          String   @id @default(dbgenerated("gen_random_uuid()"))
+  planId      String
+  plan        ScPlan   @relation(fields: [planId], references: [id])
+  date        String
+  startTime   String
+  endTime     String
+  hours       Float
+  // "support" | "travel"
+  type        String
+  activity    String
+  note        String?
+  coordinator String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([planId])
+  @@index([date])
+}
+
 model TeamTask {
   id             String    @id @default(dbgenerated("gen_random_uuid()"))
   type           String    @default("TASK")
